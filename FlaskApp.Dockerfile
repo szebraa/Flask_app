@@ -23,7 +23,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsg
 RUN sudo ufw allow 'Apache' && sudo ufw enable
 
 #want to copy over all required files and change dir
-COPY /var/www/Canonical-flask-app/ /var/www/Canonical-flask-app/
+COPY ./ /var/www/Canonical-flask-app/
 WORKDIR "/var/www/Canonical-flask-app/"
 
 #install pipenv
@@ -41,7 +41,7 @@ RUN sudo mkdir /var/www/Canonical-flask-app/.venv/
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 #copy over apache configs for the flask app and enable the config
-COPY /etc/apache2/sites-available/ /etc/apache2/sites-available/
+COPY ./apache2/sites-available/ /etc/apache2/sites-available/
 RUN sudo a2ensite Canonical-flask-app.conf
 RUN sudo systemctl reload apache2
 
