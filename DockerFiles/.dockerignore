@@ -1,0 +1,10 @@
+/var/www/Canonical-flask-app/*.md
+/var/www/Canonical-flask-app/DockerFiles
+/var/www/Canonical-flask-app/logs
+/var/www/Canonical-flask-app/static
+/var/www/Canonical-flask-app/templates
+/var/www/Canonical-flask-app/apache2
+/var/www/Canonical-flask-app/__pycache__
+/var/www/Canonical-flask-app/docker-compose.yml
+/var/www/Canonical-flask-app/.git
+/var/www/Canonical-flask-app/.venv
