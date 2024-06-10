@@ -1,0 +1,10 @@
+version: "2.20"
+services: 
+  flask_api:
+    build: ./DockerFiles
+    container_name: flask_container
+    ports:
+      - '8080:5000'
+    volumes:
+      - /var/www/Canonical-flask-app/ /var/www/Canonical-flask-app/
+      - ./var/www/Canonical-flask-app/
