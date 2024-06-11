@@ -31,7 +31,6 @@ def store_transactions():
 
 	#logic:
 	#check if POST call -> if file exists -> .csv ext -> 0<size<=16mb -> only col A-D filled -> fields correctly filled -> calc
-
 	#confirm http POST call (safety net)
 	if(request.method == 'POST'):
 		#reset gross revenue, expenses, net revenue, row entry, and calculated state for every new POST

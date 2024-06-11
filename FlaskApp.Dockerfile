@@ -51,6 +51,7 @@ RUN sudo a2ensite Canonical-flask-app.conf
 RUN sudo service apache2 start
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
 #RUN sudo service apache2 reload
+RUN chmod 777 -R /var/www/
 
 #expose port that flask runs on (5000)
 EXPOSE 5000
