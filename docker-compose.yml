@@ -4,23 +4,8 @@ services:
       context: ./
       dockerfile: ./FlaskApp.Dockerfile
     container_name: flask_container
-    #environment:
-      #FLASK_DEBUG: 1
-      #FLASK_APP: ./app.py
     ports:
       - '8080:5000'
     volumes:
-      - type: bind
-        source: './app.py'
-        target: '/var/www/Canonical-flask-app/app.py'
-        bind:
-          create_host_path: true
-      #- ${PWD}/app.py:/var/www/Canonical-flask-app/app.py
-      #- ${PWD}/utils.py:/var/www/Canonical-flask-app/utils.py
-      #- ${PWD}/app.wsgi:/var/www/Canonical-flask-app/app.wsgi
+      - ${PWD}/api:/var/www/Canonical-flask-app/api
     restart: always
-#volumes:
-  #foo:
-    #driver: local
-      #- /var/www/Canonical-flask-app/
-      #sudo docker inspect canonical-flask-app-flask_api:latest | grep "Volumes"

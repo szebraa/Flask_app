@@ -5,7 +5,7 @@ import utils, os, logging
 #use 'currentApp' to store data between requests
 
 #used for debugging
-logging.basicConfig(filename='./logs/error.log',level=logging.INFO)
+logging.basicConfig(filename='../logs/error.log',level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)

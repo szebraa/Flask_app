@@ -23,6 +23,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsg
 #RUN sudo ufw allow 'Apache' && sudo ufw enable
 
 #want to copy over all required files and change dir
+COPY ./api/* /var/www/Canonical-flask-app/api/
 COPY * /var/www/Canonical-flask-app/
 WORKDIR "/var/www/Canonical-flask-app/"
 #RUN echo ls -laRt
@@ -56,6 +57,10 @@ RUN chmod 777 -R /var/www/
 #expose port that flask runs on (5000)
 EXPOSE 5000
 
+#remove unpacked app.py, util and wsgi files from api folder
+RUN sudo rm *.py *.wsgi
+
+WORKDIR "/var/www/Canonical-flask-app/api/"
 ENV PATH="/var/www/Canonical-flask-app/.venv/bin:$PATH"
 
 #run the Flask server
