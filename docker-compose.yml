@@ -6,7 +6,7 @@ services:
       dockerfile: ./FlaskApp.Dockerfile
     container_name: flask_container
     ports:
-      - '5000:5000'
+      - '8080:5000'
     volumes:
       - /var/www/Canonical-flask-app/ /var/www/Canonical-flask-app/
       #- /var/www/Canonical-flask-app/
