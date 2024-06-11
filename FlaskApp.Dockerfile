@@ -13,26 +13,30 @@ ENV TZ=America/New_York
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install sudo
 
 # Apache is web server software, redis is a database used to save messages in job queues, supervisor runs processes
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsgi-py3 supervisor openssl cron \
-&& sudo apt install -y python3.8 && sudo mkdir /var/www/html/your-website \
-&& sudo apt install snapd && sudo snap install curl && sudo apt install pip && sudo mkdir /var/www/Canonical-flask-app \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsgi-py3 \
+&& sudo apt install -y python3.8 && sudo apt install -y snapd \
+&& sudo apt install -y curl && sudo apt install -y pip && sudo mkdir /var/www/Canonical-flask-app \
 && sudo mkdir /var/www/Canonical-flask-app/logs && sudo mkdir /var/www/Canonical-flask-app/static \
 && sudo mkdir /var/www/Canonical-flask-app/templates
 
 #Config firewall to allow Apache access
-RUN sudo ufw allow 'Apache' && sudo ufw enable
+#RUN sudo ufw allow 'Apache' && sudo ufw enable
 
 #want to copy over all required files and change dir
-COPY ./ /var/www/Canonical-flask-app/
+COPY * /var/www/Canonical-flask-app/
 WORKDIR "/var/www/Canonical-flask-app/"
+#RUN echo ls -laRt
 
 #install pipenv
-RUN sudo apt install pipenv
+RUN sudo apt install -y pipenv
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 #change ownership within /var/www
-RUN sudo addgroup webmasters && sudo adduser $USER webmasters && sudo chown -R root:webmasters /var/www \
-&& sudo find /var/www -type d -exec chmod 775 {} \; && sudo find /var/www -type d -exec chmod g+s {} \;
+RUN sudo addgroup webmasters
+#RUN sudo adduser $USER webmasters 
+RUN sudo chown -R root:webmasters /var/www
+RUN sudo find /var/www -type d -exec chmod 775 {} \;
+RUN sudo find /var/www -type d -exec chmod g+s {} \;
 
 RUN sudo find /var/www -type f -exec chmod 664 {} \;
 
@@ -43,11 +47,16 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 #copy over apache configs for the flask app and enable the config
 COPY ./apache2/sites-available/ /etc/apache2/sites-available/
 RUN sudo a2ensite Canonical-flask-app.conf
-RUN sudo systemctl reload apache2
+#need this because systemctl doesnt exist in containers
+RUN sudo service apache2 start
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+#RUN sudo service apache2 reload
 
 #expose port that flask runs on (5000)
 EXPOSE 5000
 
+ENV PATH="/var/www/Canonical-flask-app/.venv/bin:$PATH"
+
 #run the Flask server
-CMD ['python3','app.py']
+CMD ["python3","app.py"]
 

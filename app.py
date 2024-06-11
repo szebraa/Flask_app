@@ -142,6 +142,6 @@ def get_report():
 		return jsonify({'request':'report', 'status': 'failed','result':'request made was not a GET request'}), 405
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(host='0.0.0.0',debug=True)
 
 

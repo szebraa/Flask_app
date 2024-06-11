@@ -7,4 +7,4 @@
 /var/www/Canonical-flask-app/__pycache__
 /var/www/Canonical-flask-app/docker-compose.yml
 /var/www/Canonical-flask-app/.git
-/var/www/Canonical-flask-app/.venv
+*.venv
