@@ -26,7 +26,7 @@ def large_file(error):
 	return jsonify({'request':'transactions', 'status': 'failed','result':'file is too big, limit is 16mb'}), 413
 
 
-@app.route('/transactions', methods=["POST"])
+@app.route('/api/transactions', methods=["POST"])
 def store_transactions():
 
 	#logic:
@@ -122,7 +122,7 @@ def store_transactions():
 		return jsonify({'request':'transactions', 'status': 'failed','result':'request made was not a POST request'}), 405
 
 
-@app.route('/report', methods=['GET'])
+@app.route('/api/report', methods=['GET'])
 def get_report():
 	#confirm http GET call (safety net)
 	if(request.method == 'GET'):
