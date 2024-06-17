@@ -141,6 +141,8 @@ def get_report():
 		return jsonify({'request':'report', 'status': 'failed','result':'request made was not a GET request'}), 405
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',debug=True)
+	crt_file = '/var/www/Canonical-flask-app/ssl_certs/server.crt'
+	serv_key = '/var/www/Canonical-flask-app/ssl_certs/server.key'
+	app.run(host='0.0.0.0',debug=True, port=443, ssl_context=(crt_file,serv_key))
 
 
