@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, current_app
 from datetime import datetime
 from decimal import Decimal
-import utils, os, logging
+import os, logging
+from . import utils
 #use 'currentApp' to store data between requests
 
 #used for debugging
-logging.basicConfig(filename='../logs/error.log',level=logging.INFO)
+logging.basicConfig(filename='/home/Canonical-flask-app/logs/error.log',level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)

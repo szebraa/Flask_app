@@ -1,7 +1,5 @@
 import pytest, os
 
-
-
 class Test_utils:
 
     def test_remove_file(self,utils):
@@ -20,4 +18,13 @@ class Test_utils:
         current_app.config['netRevenue'] = -123
         utils.reset_sums()
         res = [current_app.config.get('grossRevenue',0),current_app.config.get('expenses',0), current_app.config.get('expenses',0)]
+        assert res == expected
+    
+    def test_reset_entries_counter(self,app,current_app,utils):
+        app.app_context().push()
+        expected = [0,False]
+        current_app.config['entries'] = 9111 
+        current_app.config['calculated'] = True
+        utils.reset_entries_counter()
+        res = [current_app.config.get('entries',0), current_app.config.get('calculated',0)]
         assert res == expected
