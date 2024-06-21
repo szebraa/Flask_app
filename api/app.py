@@ -2,12 +2,19 @@ from flask import Flask, request, jsonify, current_app
 from datetime import datetime
 from decimal import Decimal
 import os, logging
-from . import utils
+import utils, config
 #use 'currentApp' to store data between requests
-
-#used for debugging
-logging.basicConfig(filename='/home/Canonical-flask-app/logs/error.log',level=logging.INFO)
-logger = logging.getLogger(__name__)
+local_log_path = '/home/Canonical-flask-app/logs'
+container_log_path = '/var/www/Canonical-flask-app/logs'
+log_file = None
+if(os.path.exists(local_log_path)):
+	log_file = local_log_path + '/error.log'
+elif(os.path.exists(container_log_path)):
+	log_file = container_log_path + '/error.log'
+if(log_file):
+	#used for debugging
+	logging.basicConfig(filename=log_file,level=logging.INFO)
+	logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -16,10 +23,6 @@ app.config['JSON_SORT_KEYS'] = False
 
 #ensures <= 16mb files  
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-#constants
-filepath = "/tmp/tmp.csv"
-file_storage_key = 'data'
 
 #json response for files >16mb
 @app.errorhandler(413)
@@ -39,22 +42,22 @@ def store_transactions():
 		utils.reset_entries_counter()
 
 		#check: if file exists -> .csv ext -> 0<size<=16mb
-		resp = utils.validate_file(request.files,file_storage_key,filepath)
+		resp = utils.validate_file(request.files,config.file_storage_key,config.filepath)
 		
 		#no error codes/legitimate file
 		if(not resp):
 
-			file_open = utils.open_file(filepath, os.O_RDONLY)
+			file_open = utils.open_file(config.filepath, os.O_RDONLY)
 			#safety catch for issues opening up the tmp file
 			if(type(file_open)== tuple):
 				return file_open
 
-			byte_len = os.stat(filepath).st_size
+			byte_len = os.stat(config.filepath).st_size
 			#catch cases where file is not encoded using utf-8
 			try:
 				file = os.read(file_open,byte_len).decode('utf-8')
 			except UnicodeDecodeError:
-				utils.file_cleanup(file_open,file_storage_key,filepath)
+				utils.file_cleanup(file_open,config.file_storage_key,config.filepath)
 				return jsonify({'request':'transactions', 'status': 'failed', 'result':'file not encoded in utf-8. Please ensure the file is encoded in utf-8 format'}), 415
 
 			#process
@@ -64,7 +67,7 @@ def store_transactions():
 			#go through each row in the csv
 			for line in file_contents:
 				#check only col A-D filled
-				list_entry = utils.process_csv_row(line,file_open,file_storage_key,filepath)
+				list_entry = utils.process_csv_row(line,file_open,config.file_storage_key,config.filepath)
 				if(type(list_entry)==list):
 					date = list_entry[0].lower().strip()
 					val_type = list_entry[1].lower().strip()
@@ -72,25 +75,25 @@ def store_transactions():
 					memo = list_entry[3].lower().strip()
 				
 					#process date; check date field correctly filled
-					resp = utils.verify_date(date,file_open,year,file_storage_key,filepath)
+					resp = utils.verify_date(date,file_open,year,config.file_storage_key,config.filepath)
 					#either incorrectly formatted according to YYYY-mm-dd, or not of the same yr as the rest of the entries
 					if(resp):
 						return resp
 
 					#process value_type (income or expenses); check type field correctly filled
-					net = utils.process_type(val_type,file_open,file_storage_key,filepath)
+					net = utils.process_type(val_type,file_open,config.file_storage_key,config.filepath)
 					#neither expense nor income
 					if(type(net) != int):
 						return net
 
 					#process memo; check memo field correctly filled
-					resp = utils.process_memo(memo,file_open,file_storage_key,filepath)
+					resp = utils.process_memo(memo,file_open,config.file_storage_key,config.filepath)
 					#memo is all numbers, not a-z chars in memo
 					if(resp):
 						return resp
 
 					#process amount; check amount field correctly filled
-					amount = utils.process_amount(amount,file_open,file_storage_key,filepath)
+					amount = utils.process_amount(amount,file_open,config.file_storage_key,config.filepath)
 					#invalid float, >32 bits, or > 2 decimal places
 					if(type(amount)!=float):
 						resp = amount
@@ -105,13 +108,13 @@ def store_transactions():
 					return list_entry
 
 			#calculate net revenue and get 200 OK JSON response; calc
-			resp = utils.calculate_net_revenue(file_open,file_storage_key,filepath)
+			resp = utils.calculate_net_revenue(file_open,config.file_storage_key,config.filepath)
 			return resp
 
 		#not legitimate file: either file does not exists or not .csv ext or size < 0
 		else:
 			try:
-				request.files.get(file_storage_key).close()
+				request.files.get(config.file_storage_key).close()
 			except AttributeError:
 				pass
 			return resp
@@ -119,7 +122,7 @@ def store_transactions():
 
 	#By default with methods = ["POST"], any other HTTP request is already blocked; this is a safety net
 	else:
-		request.files.get(file_storage_key).close()
+		request.files.get(config.file_storage_key).close()
 		return jsonify({'request':'transactions', 'status': 'failed','result':'request made was not a POST request'}), 405
 
 
