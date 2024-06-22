@@ -32,7 +32,6 @@ def large_file(error):
 
 @app.route('/api/transactions', methods=["POST"])
 def store_transactions():
-
 	#logic:
 	#check if POST call -> if file exists -> .csv ext -> 0<size<=16mb -> only col A-D filled -> fields correctly filled -> calc
 	#confirm http POST call (safety net)
