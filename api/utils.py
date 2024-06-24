@@ -7,8 +7,8 @@ from decimal import Decimal
 def remove_file(filepath):
 	try:
 		os.remove(filepath)
-	except OSError:
-		pass
+	except FileNotFoundError:
+		raise FileNotFoundError ("File does not exist in provided directory")
 
 #safety for os opening file (incase not there)
 def open_file(path,mode):
@@ -31,7 +31,10 @@ def reset_entries_counter():
 #cleanup temp file + close files
 def file_cleanup(file_open,key,filepath):
 	os.close(file_open)
-	request.files.get(key).close()
+	try:
+		request.files.get(key).close()
+	except RuntimeError:
+		pass
 	remove_file(filepath)
 
 

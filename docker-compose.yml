@@ -5,7 +5,7 @@ services:
       dockerfile: ./FlaskApp.Dockerfile
     container_name: flask_container
     ports:
-      - '443:443'
+      - '127.0.0.1:443:443'
     volumes:
       - ${PWD}/api:/var/www/Canonical-flask-app/api
     restart: always
