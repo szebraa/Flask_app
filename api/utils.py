@@ -44,8 +44,9 @@ def validate_file(request_files,key,filepath):
 	if(request_files.get(key,0) and (len(request_files.getlist(key)) == 1)):
 		#filename without spaces to test for empty file names
 		filename = (request_files.get(key).filename).strip()
+		filename_prefix = filename.split('.')[0]
 		#valid file name
-		if(filename):
+		if(filename_prefix):
 			#check if csv file by checking last element in list after a split by '.'
 			filename_list = (request_files.get(key).filename).split('.')
 			#csv file

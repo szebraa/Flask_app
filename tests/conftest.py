@@ -2,6 +2,7 @@ import pytest, sys, os, csv
 from api import utils as util
 from api import config as configs
 from pytest_cases import parametrize_with_cases, fixture, parametrize
+from typing import List, Union
 
 # getting the name of the directory where the this file is present.
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -31,16 +32,18 @@ class Helpers:
         return configs.filepath
     
     @staticmethod
-    def gen_file(file_type,abs_path,filename,input_data = None):
+    def gen_file(file_type: str,abs_path: str,filename: str,input_data: List[List[Union[str,float]]] = None):
         #default data
         if(not input_data):
             input_data = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
             ['2020-07-04',' Income',40, ' 347 Woodrow']]
+        elif(type(input_data) == bool):
+            input_data = []
         file_loc = abs_path + filename  if abs_path[-1] == '/' else  abs_path + "/" + filename
         #create new directory if it doesnt exist to avoid errors in writing to file later
         if(not os.path.exists(abs_path)):
              os.makedirs(abs_path)
-        if(file_type == 'csv'):
+        if(file_type == 'csv' or file_type == 'txt'):
             with open(file_loc,"w",newline='') as file:
                 writer = csv.writer(file)
                 for data in input_data:
@@ -54,7 +57,7 @@ class Helpers:
 
     #gen immutableMultiDict FileStorage object
     @staticmethod
-    def gen_mock_request_file(file_locs: list,filenames: list,types_of_content: list, num_of_files: int):
+    def gen_mock_request_file(file_locs: list,filenames: list,types_of_content: list, num_of_files: int, key: str = None):
         if(not len(file_locs) == len(filenames) == len(types_of_content) == num_of_files):
             return "ensure fields are consistent in length"
         i = 0
@@ -67,6 +70,7 @@ class Helpers:
             filename=filenames[i],
             content_type=types_of_content[i]
             )
+            
             mock_request_file.add(Helpers.get_file_storage_key(),mock_file)
             i+=1
         mock_request_file = ImmutableMultiDict(mock_request_file)
