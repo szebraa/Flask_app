@@ -3,16 +3,16 @@ import os
 ########################### HAPPY CASES TESTCASES #####################################################
 #regular data (happy case)
 csv_testcase_1 = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
-['2020-07-04',' Income',40, ' 347 Woodrow'],
-['2020-07-06',' Income',15, '  219 Pleasant'],
-['   2020-07-12',' income',35, ' Blackburn St.'],
-['2020-07-12','  Expense',27.5, ' Repairs']]
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2020-07-06',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income','35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' REPAIRS']]
 #leading 0s (happy case)
 csv_testcase_2 = [['    2020-07-01   ','expense', 00018.77, 'Fuel'],
-['2020-07-04',' Income',40, ' 347 Woodrow'],
-['2020-07-06',' Income',15, '  219 Pleasant'],
-['   2020-07-12',' income',0035.0, ' Blackburn St.'],
-['2020-07-12','  Expense',0027.5, ' Repairs']]
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2020-07-06',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income','0035.0', ' Blackburn St.'],
+['2020-07-12','  Expense','0027.5', ' Repairs']]
 
 #regular expenses/revenue (happy case)
 expenses_testcase_1 = [11.11,90.12,80,99.11,10.10]
@@ -31,14 +31,25 @@ grossRevenues_testcase_3 = [-10.34,-100.23,-180.11,-32.11,-10.44,-1.00]
 
 ########################### EXCEPTION TESTCASES ##########################################################
 
-invalid_filepath_testcases = ['/tmp/notaRealFile.mmz','/tmp/fakeashell.ccv','/somenotrealdir/bob.txt']
-
 expected_resp_1 = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -X POST http://127.0.0.1:5000/transactions -F "data=@data.csv" '}, 400)
 expected_resp_2 = ({'request':'transactions', 'status': 'failed','result':'filename is empty, dont use special characters/only spaces when naming your csv file" '}, 400)
 expected_resp_3 = ({'request':'transactions', 'status': 'failed','result':'incorrect file extension, ensure csv file is submitted'}, 415)
 expected_resp_4 = ({'request':'transactions', 'status': 'failed','result':'input file is empty'}, 404)
 partial_expected_resp_5 = ({'request':'transactions', 'status': 'failed','result':'columns A-D are not filled properly on row '}, 422)
 partial_expected_resp_6 = ({'request':'transactions', 'status': 'failed','result':'too many column entries on row '}, 422)
+expected_resp_7 = ({'request':'transactions', 'status': 'failed','result':'incorrectly formatted date, format as yyyy-mm-dd'}, 422)
+expected_resp_8 = ({'request':'transactions', 'status': 'failed','result':'Please ensure all entries are from the same year'}, 422)
+expected_resp_9 = ({'request':'transactions', 'status': 'failed','result':'incorrectly formatted type, please specify either expense or income'}, 422)
+expected_resp_10 = ({'request':'transactions', 'status': 'failed','result':'your memo does not have any english characters (a-z), which does not make sense'}, 422)
+expected_resp_11 = ({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}, 422)
+expected_resp_12 = ({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}, 422)
+expected_resp_13 = ({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}, 422)
+expected_resp_14 = ({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. Please dont use scientific notation'}, 422)
+
+
+#file test cases:
+
+invalid_filepath_testcases = ['/tmp/notaRealFile.mmz','/tmp/fakeashell.ccv','/somenotrealdir/bob.txt']
 
 valid_key = "data"
 invalid_key = "bob"
@@ -51,34 +62,111 @@ invalid_csv_file_testcase_3 = [valid_key,tmp_test_path,[csv_testcase_1],["   .cs
 invalid_csv_file_testcase_4 = [valid_key,tmp_test_path,[csv_testcase_1],["test77.txt"],expected_resp_3]
 invalid_csv_file_testcase_5 = [valid_key,tmp_test_path,[True],["test69.csv"],expected_resp_4]
 
+#row test cases:
+
 #cases: 1) A-D not filled, but E-Z might be try with a) all missing, and b) some missing 2) Too many row entries >4
 #Col A-D data missing
 
 tmp_path = "/tmp/"
 
-csv_testcase_3 = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
-['2020-07-04',' Income',40, ' 347 Woodrow'],
-["", "", "","",'2020-07-06',' Income',15, '  219 Pleasant'],
-['   2020-07-12',' income',35, ' Blackburn St.'],
-['2020-07-12','  Expense',27.5, ' Repairs']]
+csv_testcase_3 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+["", "", "","",'2020-07-06',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income','35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' Repairs']]
 
 #some col missing
-csv_testcase_4 = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
-['2020-07-04',' Income',40, ' 347 Woodrow'],
-['2020-07-06',' Income',15, '  219 Pleasant'],
-['   2020-07-12',' income',"", 35, ' Blackburn St.'],
-['2020-07-12','  Expense',27.5, ' Repairs']]
+csv_testcase_4 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2020-07-06',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income',"", '35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' Repairs']]
 
 #too many col entries (>4):
-csv_testcase_5 = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
-['2020-07-04',' Income',40, ' 347 Woodrow'],
-['2020-07-06',' Income',15, '  219 Pleasant'],
-['   2020-07-12',' income',"still_another_input", 35, ' Blackburn St.',"asadsa","sadsaqqq"],
-['2020-07-12','  Expense',27.5, ' Repairs']]
+csv_testcase_5 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2020-07-06',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income',"still_another_input", '35', ' Blackburn St.',"asadsa","sadsaqqq"],
+['2020-07-12','  Expense','27.5', ' Repairs']]
 
 invalid_csv_file_testcase_6 = [valid_key,tmp_path,[csv_testcase_3],["test.csv"],partial_expected_resp_5]
 invalid_csv_file_testcase_7 = [valid_key,tmp_path,[csv_testcase_4],["test.csv"],partial_expected_resp_5]
 invalid_csv_file_testcase_8 = [valid_key,tmp_path,[csv_testcase_5],["test.csv"],partial_expected_resp_6]
+
+#date test cases:
+
+#cases: 1) date not formated as: yyyy-mm-dd (values that dont make sense), 2) date not formated as: yyyy-mm-dd (e.g: dd-mm-yyyy) , 3) not all same year
+
+#date not formated as: yyyy-mm-dd (values that dont make sense)
+csv_testcase_6 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2020-07-06',' Income','15', '  219 Pleasant'],
+['   kkkk-27-99',' income','35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' Repairs']]
+
+#date not formated as: yyyy-mm-dd (e.g: dd-mm-yyyy)
+csv_testcase_7 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['06-07-2020',' Income','15', '  219 Pleasant'],
+['   2020-07-12',' income','35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' Repairs']]
+
+#not all the same year
+csv_testcase_8 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', ' 347 Woodrow'],
+['2022-07-06',' Income','15', '  219 Pleasant'],
+['   2021-07-12',' income','35', ' Blackburn St.'],
+['2020-07-12','  Expense','27.5', ' Repairs']]
+
+invalid_csv_file_testcase_9 = [valid_key,tmp_path,[csv_testcase_6],["test.csv"],expected_resp_7]
+invalid_csv_file_testcase_10 = [valid_key,tmp_path,[csv_testcase_7],["test.csv"],expected_resp_7]
+invalid_csv_file_testcase_11 = [valid_key,tmp_path,[csv_testcase_8],["test.csv"],expected_resp_8]
+
+
+#type cases:
+
+#cases: 1) Not either income or expense
+csv_testcase_9 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Incomee','40', ' 347 Woodrow']]
+invalid_csv_file_testcase_12 = [valid_key,tmp_path,[csv_testcase_9],["test.csv"],expected_resp_9]
+
+
+#memo cases:
+
+#cases: 1) No chars a-z/A-Z used
+csv_testcase_10 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40', '1-800-999-000-@@@/]!>=']]
+invalid_csv_file_testcase_13 = [valid_key,tmp_path,[csv_testcase_10],["test.csv"],expected_resp_10]
+
+
+#amount cases:
+
+#cases: 1) valid float (no $), 2) <=32 bits, 3) < 2 decimal places, 4) scientific notation
+
+#preceeded by $ (invalid float)
+csv_testcase_11 = [['    2020-07-01   ','expense', '$18.77', 'Fuel'],
+['2020-07-04',' Income','40', 'Repairs']]
+
+# >32 bits
+csv_testcase_12 = [['    2020-07-01   ','expense', '4294967296', 'Fuel'],
+['2020-07-04',' Income','40', 'Repairs']]
+
+# > 2 decimal places
+csv_testcase_13 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','40.000', 'Repairs']]
+
+# scientific notation
+csv_testcase_14 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+['2020-07-04',' Income','2.1e4', 'Repairs']]
+
+
+invalid_csv_file_testcase_14 = [valid_key,tmp_path,[csv_testcase_11],["test.csv"],expected_resp_11]
+invalid_csv_file_testcase_15 = [valid_key,tmp_path,[csv_testcase_12],["test.csv"],expected_resp_12]
+invalid_csv_file_testcase_16 = [valid_key,tmp_path,[csv_testcase_13],["test.csv"],expected_resp_13]
+invalid_csv_file_testcase_17 = [valid_key,tmp_path,[csv_testcase_14],["test.csv"],expected_resp_14]
+
+
+
 
 ##########################################################################################################
 
@@ -147,7 +235,7 @@ class utils_cases:
         return [mock_request_file,key,file_loc,expected]
 
     #cases: 1) A-D not filled, but E-Z might be try with a) all missing, and b) some missing 2) Too many row entries >4
-    #gen mock expenses and revenue testcases
+    #gen mock [request_files,key,filepath,expected]
     @case(tags="val_invalid_rows")
     @parametrize(test_file_info=(invalid_csv_file_testcase_6,invalid_csv_file_testcase_7,invalid_csv_file_testcase_8))
     def case_validate_invalid_rows_1(self,helpers,utils,test_file_info):
@@ -169,38 +257,136 @@ class utils_cases:
             i+=1
         return [file_open,file_loc,file_contents,expected]
 
+    #cases: 1) date not formated as: yyyy-mm-dd (values that dont make sense), 2) date not formated as: yyyy-mm-dd (e.g: dd-mm-yyyy) , 3) not all same year
+    #gen mock [request_files,key,filepath,expected]
+    @case(tags="val_invalid_date")
+    @parametrize(test_file_info=(invalid_csv_file_testcase_9,invalid_csv_file_testcase_10,invalid_csv_file_testcase_11))
+    def case_validate_invalid_date_1(self,helpers,utils,test_file_info):
+        #testinput = [key,filepath,data,files,expected_resp]
+        #testoutput = [request_files,key,filepath,expected]
+        key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
+        num_of_files = len(filename)
+        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
+        i = 0
+        for content in filename:
+            content_list = content.split(".")
+            types_of_content.append(content_list[-1].lower())
+            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
+            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
+            byte_len.append(os.stat(file_loc[i]).st_size)
+            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            file_contents.append(file[i].split('\n')[:-1])
+            i+=1
+        return [file_open,file_loc,file_contents,expected]
+
+
+    #cases: 1) Not either income or expense
+    #gen mock [request_files,key,filepath,expected]
+    #note parameterize requires a comma even if only 1 testcase used
+    @case(tags="val_invalid_type")
+    @parametrize(test_file_info=(invalid_csv_file_testcase_12,))
+    def case_validate_invalid_type_1(self,helpers,utils,test_file_info):
+        #testinput = [key,filepath,data,files,expected_resp]
+        #testoutput = [request_files,key,filepath,expected]
+        key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
+        num_of_files = len(filename)
+        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
+        i = 0
+        for content in filename:
+            content_list = content.split(".")
+            types_of_content.append(content_list[-1].lower())
+            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
+            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
+            byte_len.append(os.stat(file_loc[i]).st_size)
+            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            file_contents.append(file[i].split('\n')[:-1])
+            i+=1
+        return [file_open,file_loc,file_contents,expected]
+
+
+    #cases: 1) No chars a-z/A-Z used
+    #gen mock [request_files,key,filepath,expected]
+    @case(tags="val_invalid_memo")
+    @parametrize(test_file_info=(invalid_csv_file_testcase_13,))
+    def case_validate_invalid_memo_1(self,helpers,utils,test_file_info):
+        #testinput = [key,filepath,data,files,expected_resp]
+        #testoutput = [request_files,key,filepath,expected]
+        key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
+        num_of_files = len(filename)
+        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
+        i = 0
+        for content in filename:
+            content_list = content.split(".")
+            types_of_content.append(content_list[-1].lower())
+            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
+            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
+            byte_len.append(os.stat(file_loc[i]).st_size)
+            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            file_contents.append(file[i].split('\n')[:-1])
+            i+=1
+        return [file_open,file_loc,file_contents,expected]
+
+    #cases: 1) valid float (no $), 2) <=32 bits, 3) < 2 decimal places, 4) scientific notation
+    #gen mock [request_files,key,filepath,expected]
+    @case(tags="val_invalid_amount")
+    @parametrize(test_file_info=(invalid_csv_file_testcase_14,invalid_csv_file_testcase_15,invalid_csv_file_testcase_16,invalid_csv_file_testcase_17))
+    def case_validate_invalid_amount_1(self,helpers,utils,test_file_info):
+        #testinput = [key,filepath,data,files,expected_resp]
+        #testoutput = [request_files,key,filepath,expected]
+        key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
+        num_of_files = len(filename)
+        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
+        i = 0
+        for content in filename:
+            content_list = content.split(".")
+            types_of_content.append(content_list[-1].lower())
+            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
+            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
+            byte_len.append(os.stat(file_loc[i]).st_size)
+            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            file_contents.append(file[i].split('\n')[:-1])
+            i+=1
+        return [file_open,file_loc,file_contents,expected]
+
+
 
 
 '''
 
-#function to check check only col A-D filled in csv
-def process_csv_row(line,file_open,key,filepath):
-	#remove new line char and leading/trailing white spaces in full string
-	line = line.strip()
-	#get rid of white spaces & empty entries for each string in the list
-	list_entry = line.split(',')
-	list_entry = [ent.strip() for ent in list_entry]
-	
-	#get index of empty columns
-	empty_col = [i for i,element in enumerate(list_entry) if not element]
-	#empty column cases col A-D (0-3) isnt filled, but E-Z might be (missing column entries case)
-	if(0 in empty_col or 1 in empty_col or 2 in empty_col or 3 in empty_col):
+#function to verify amount provided is: valid float, <=32 bits, < 2 decimal places
+def process_amount(amount,file_open,key,filepath):
+	#assumptions: no $ symbol infront of the values in csv file, no commas present in the amount field (e.g.: 1,23), scientific notation not valid
+
+	#check if valid float
+	invalid_amount = False
+	try:
+		float(amount)
+	except ValueError:
+		invalid_amount = True
+	if(invalid_amount):
 		file_cleanup(file_open,key,filepath)
 		reset_sums()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'columns A-D are not filled properly on row '+ str(current_app.config.get('entries',0)+1)}), 422
+		reset_entries_counter()
+		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}), 422
+	amount = float(amount)
 
-	#get rid of all empty string entries
-	list_entry[:] = [ent for ent in list_entry if ent]
-	' '.join(list_entry).split()
-
-
-	#ensure each row only 1st 4 columns are filled
-	if(len(list_entry) == 4):
-		return list_entry
-
-	#too many row entries
-	else:
+	#limit amount to 32 bit
+	if(abs(amount)> 0xffffffff):
 		file_cleanup(file_open,key,filepath)
 		reset_sums()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'too many column entries on row '+ str(current_app.config.get('entries',0)+1)}), 422
+		reset_entries_counter()
+		return jsonify({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}), 422
+
+	#confirm amount is limited to at most 2 decimal places (51.32 makes sense, 51.323 doesnt)
+	if(len(str(amount).split('.')[-1]) > 2):
+		file_cleanup(file_open,key,filepath)
+		reset_sums()
+		reset_entries_counter()
+		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}), 422
+
+	return amount
 '''

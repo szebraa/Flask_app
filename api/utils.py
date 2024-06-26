@@ -166,6 +166,13 @@ def process_memo(memo,file_open,key,filepath):
 #function to verify amount provided is: valid float, <=32 bits, < 2 decimal places
 def process_amount(amount,file_open,key,filepath):
 	#assumptions: no $ symbol infront of the values in csv file, no commas present in the amount field (e.g.: 1,23), scientific notation not valid
+	
+	#check if scientific notation
+	if('e' in amount):
+		file_cleanup(file_open,key,filepath)
+		reset_sums()
+		reset_entries_counter()
+		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. Please dont use scientific notation'}), 422
 
 	#check if valid float
 	invalid_amount = False
@@ -178,10 +185,10 @@ def process_amount(amount,file_open,key,filepath):
 		reset_sums()
 		reset_entries_counter()
 		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}), 422
-	amount = float(amount)
+	float_amount = float(amount)
 
 	#limit amount to 32 bit
-	if(abs(amount)> 0xffffffff):
+	if(abs(float_amount)> 0xffffffff):
 		file_cleanup(file_open,key,filepath)
 		reset_sums()
 		reset_entries_counter()
@@ -194,7 +201,7 @@ def process_amount(amount,file_open,key,filepath):
 		reset_entries_counter()
 		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}), 422
 
-	return amount
+	return float_amount
 
 #func to update expenses, gross revenue and row entries
 def update_result(net,amount):

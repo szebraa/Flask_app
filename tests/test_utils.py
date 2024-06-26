@@ -213,40 +213,107 @@ class Test_utils:
         expected = (eval(expected_str), expected[1])
         assert (res[0].json,res[1]) == expected
 
+    #cases: 1) date not formated as: yyyy-mm-dd (values that dont make sense), 2) date not formated as: yyyy-mm-dd (e.g: dd-mm-yyyy) , 3) not all same year
     
+    @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_date', import_fixtures = True)
+    def test_validate_invalid_date(self,utils,helpers,app,current_app,test_file_info):
+        #[file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
+        year_list = []
+
+        for line in file_contents:
+            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
+            date = list_entry[0].lower().strip()
+            res = utils.verify_date(date,file_open,year_list,helpers.get_file_storage_key(),file_loc)
+            if(res):
+                break
+        if(os.path.isfile(file_loc)):
+            os.remove(file_loc)
+        assert (res[0].json,res[1]) == expected
+
+    #cases: 1) Not either income or expense
+
+    @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_type', import_fixtures = True)
+    def test_validate_invalid_type(self,utils,helpers,app,current_app,test_file_info):
+        #[file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
+
+        for line in file_contents:
+            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
+            val_type = list_entry[1].lower().strip()
+            res = utils.process_type(val_type,file_open,helpers.get_file_storage_key(),file_loc)
+            if(type(res)!=int):
+                break
+        if(os.path.isfile(file_loc)):
+            os.remove(file_loc)
+        assert (res[0].json,res[1]) == expected   
 
 
+    #cases: 1) No chars a-z/A-Z used
+    @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_memo', import_fixtures = True)
+    def test_validate_invalid_memo(self,utils,helpers,app,current_app,test_file_info):
+        #[file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
 
+        for line in file_contents:
+            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
+            memo = list_entry[3].lower().strip()
+            res = utils.process_memo(memo,file_open,helpers.get_file_storage_key(),file_loc)
+            if(res):
+                break
+        if(os.path.isfile(file_loc)):
+            os.remove(file_loc)
+        assert (res[0].json,res[1]) == expected    
+
+
+    #cases: 1) valid float (no $), 2) <=32 bits, 3) < 2 decimal places, 4) scientific notation
+    @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_amount', import_fixtures = True)
+    def test_validate_invalid_amount(self,utils,helpers,app,current_app,test_file_info):
+        #[file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
+
+        for line in file_contents:
+            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
+            amount = list_entry[2].lower().strip()
+            #process_amount
+            res = utils.process_amount(amount,file_open,helpers.get_file_storage_key(),file_loc)
+            if(type(res)!=float):
+                break
+        if(os.path.isfile(file_loc)):
+            os.remove(file_loc)
+        assert (res[0].json,res[1]) == expected    
 
     '''
-    #function to check check only col A-D filled in csv
-    def process_csv_row(line,file_open,key,filepath):
-	#remove new line char and leading/trailing white spaces in full string
-	line = line.strip()
-	#get rid of white spaces & empty entries for each string in the list
-	list_entry = line.split(',')
-	list_entry = [ent.strip() for ent in list_entry]
-	
-	#get index of empty columns
-	empty_col = [i for i,element in enumerate(list_entry) if not element]
-	#empty column cases col A-D (0-3) isnt filled, but E-Z might be (missing column entries case)
-	if(0 in empty_col or 1 in empty_col or 2 in empty_col or 3 in empty_col):
-		file_cleanup(file_open,key,filepath)
-		reset_sums()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'columns A-D are not filled properly on row '+ str(current_app.config.get('entries',0)+1)}), 422
+    #function to verify amount provided is: valid float, <=32 bits, < 2 decimal places
+    def process_amount(amount,file_open,key,filepath):
+        #assumptions: no $ symbol infront of the values in csv file, no commas present in the amount field (e.g.: 1,23), scientific notation not valid
 
-	#get rid of all empty string entries
-	list_entry[:] = [ent for ent in list_entry if ent]
-	' '.join(list_entry).split()
+        #check if valid float
+        invalid_amount = False
+        try:
+            float(amount)
+        except ValueError:
+            invalid_amount = True
+        if(invalid_amount):
+            file_cleanup(file_open,key,filepath)
+            reset_sums()
+            reset_entries_counter()
+            return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}), 422
+        amount = float(amount)
 
+        #limit amount to 32 bit
+        if(abs(amount)> 0xffffffff):
+            file_cleanup(file_open,key,filepath)
+            reset_sums()
+            reset_entries_counter()
+            return jsonify({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}), 422
 
-	#ensure each row only 1st 4 columns are filled
-	if(len(list_entry) == 4):
-		return list_entry
+        #confirm amount is limited to at most 2 decimal places (51.32 makes sense, 51.323 doesnt)
+        if(len(str(amount).split('.')[-1]) > 2):
+            file_cleanup(file_open,key,filepath)
+            reset_sums()
+            reset_entries_counter()
+            return jsonify({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}), 422
 
-	#too many row entries
-	else:
-		file_cleanup(file_open,key,filepath)
-		reset_sums()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'too many column entries on row '+ str(current_app.config.get('entries',0)+1)}), 422
+        return amount
     '''

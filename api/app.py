@@ -70,7 +70,7 @@ def store_transactions():
 				if(type(list_entry)==list):
 					date = list_entry[0].lower().strip()
 					val_type = list_entry[1].lower().strip()
-					amount = list_entry[2].strip()
+					amount = list_entry[2].lower().strip()
 					memo = list_entry[3].lower().strip()
 				
 					#process date; check date field correctly filled
