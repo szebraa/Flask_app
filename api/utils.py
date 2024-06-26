@@ -151,7 +151,7 @@ def process_memo(memo,file_open,key,filepath):
 	#use ascii to check if theres at least 1 letter in this string (97 - 122 ;a-z)
 	valid_memo = False
 	for char in memo:
-		if((ord(char)>=97 and ord(char)<=122) or (ord(char)>=65 and ord(char)<=90)):
+		if(ord(char)>=97 and ord(char)<=122):
 			valid_memo = True
 			break
 	#all numbers/no letters in memo
