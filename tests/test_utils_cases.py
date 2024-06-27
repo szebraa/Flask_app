@@ -1,3 +1,4 @@
+#unit test testcase file
 from pytest_cases import parametrize, parametrize_with_cases, case
 import os
 ########################### HAPPY CASES TESTCASES #####################################################
@@ -171,6 +172,9 @@ invalid_csv_file_testcase_17 = [valid_key,tmp_path,[csv_testcase_14],["test.csv"
 ##########################################################################################################
 
 class utils_cases:
+
+    ########################### happy cases #################################
+
     #gen valid csv file and pass back Immutable MultiDict File Storage object (mock request file), and file_loc (full path + filename)
     @case(tags="val_file")
     @parametrize(testfilename=('test1.csv', 'test2.csv','test41.csv'))
@@ -207,6 +211,9 @@ class utils_cases:
     def case_validate_valid_update_results(self,expenses_revenues):
         return [expenses_revenues[0],expenses_revenues[1]]
     
+    #########################################################################################################
+
+    ########################### exception cases #############################################################
 
     #gen mock expenses and revenue testcases
     @case(tags="exception_files")
@@ -243,19 +250,8 @@ class utils_cases:
         #testoutput = [request_files,key,filepath,expected]
         key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
         num_of_files = len(filename)
-        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
-        i = 0
-        for content in filename:
-            content_list = content.split(".")
-            types_of_content.append(content_list[-1].lower())
-            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
-            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
-            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
-            byte_len.append(os.stat(file_loc[i]).st_size)
-            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
-            file_contents.append(file[i].split('\n')[:-1])
-            i+=1
-        return [file_open,file_loc,file_contents,expected]
+        test_case_fields = helpers.open_and_decode_file(filename, abs_path, file_data, expected, num_of_files,key)
+        return test_case_fields
 
     #cases: 1) date not formated as: yyyy-mm-dd (values that dont make sense), 2) date not formated as: yyyy-mm-dd (e.g: dd-mm-yyyy) , 3) not all same year
     #gen mock [request_files,key,filepath,expected]
@@ -267,18 +263,8 @@ class utils_cases:
         key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
         num_of_files = len(filename)
         types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
-        i = 0
-        for content in filename:
-            content_list = content.split(".")
-            types_of_content.append(content_list[-1].lower())
-            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
-            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
-            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
-            byte_len.append(os.stat(file_loc[i]).st_size)
-            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
-            file_contents.append(file[i].split('\n')[:-1])
-            i+=1
-        return [file_open,file_loc,file_contents,expected]
+        test_case_fields = helpers.open_and_decode_file(filename, abs_path, file_data, expected, num_of_files,key)
+        return test_case_fields
 
 
     #cases: 1) Not either income or expense
@@ -291,19 +277,8 @@ class utils_cases:
         #testoutput = [request_files,key,filepath,expected]
         key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
         num_of_files = len(filename)
-        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
-        i = 0
-        for content in filename:
-            content_list = content.split(".")
-            types_of_content.append(content_list[-1].lower())
-            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
-            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
-            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
-            byte_len.append(os.stat(file_loc[i]).st_size)
-            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
-            file_contents.append(file[i].split('\n')[:-1])
-            i+=1
-        return [file_open,file_loc,file_contents,expected]
+        test_case_fields = helpers.open_and_decode_file(filename, abs_path, file_data, expected, num_of_files,key)
+        return test_case_fields
 
 
     #cases: 1) No chars a-z/A-Z used
@@ -315,19 +290,8 @@ class utils_cases:
         #testoutput = [request_files,key,filepath,expected]
         key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
         num_of_files = len(filename)
-        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
-        i = 0
-        for content in filename:
-            content_list = content.split(".")
-            types_of_content.append(content_list[-1].lower())
-            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
-            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
-            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
-            byte_len.append(os.stat(file_loc[i]).st_size)
-            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
-            file_contents.append(file[i].split('\n')[:-1])
-            i+=1
-        return [file_open,file_loc,file_contents,expected]
+        test_case_fields = helpers.open_and_decode_file(filename, abs_path, file_data, expected, num_of_files,key)
+        return test_case_fields
 
     #cases: 1) valid float (no $), 2) <=32 bits, 3) < 2 decimal places, 4) scientific notation
     #gen mock [request_files,key,filepath,expected]
@@ -338,55 +302,7 @@ class utils_cases:
         #testoutput = [request_files,key,filepath,expected]
         key, abs_path, file_data, filename,expected = test_file_info[0], test_file_info[1], test_file_info[2], test_file_info[3], test_file_info[4]
         num_of_files = len(filename)
-        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
-        i = 0
-        for content in filename:
-            content_list = content.split(".")
-            types_of_content.append(content_list[-1].lower())
-            file_loc.append(helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
-            mock_request_file = helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
-            file_open.append(utils.open_file(file_loc[i], os.O_RDONLY))
-            byte_len.append(os.stat(file_loc[i]).st_size)
-            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
-            file_contents.append(file[i].split('\n')[:-1])
-            i+=1
-        return [file_open,file_loc,file_contents,expected]
+        test_case_fields = helpers.open_and_decode_file(filename, abs_path, file_data, expected, num_of_files,key)
+        return test_case_fields
 
-
-
-
-'''
-
-#function to verify amount provided is: valid float, <=32 bits, < 2 decimal places
-def process_amount(amount,file_open,key,filepath):
-	#assumptions: no $ symbol infront of the values in csv file, no commas present in the amount field (e.g.: 1,23), scientific notation not valid
-
-	#check if valid float
-	invalid_amount = False
-	try:
-		float(amount)
-	except ValueError:
-		invalid_amount = True
-	if(invalid_amount):
-		file_cleanup(file_open,key,filepath)
-		reset_sums()
-		reset_entries_counter()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}), 422
-	amount = float(amount)
-
-	#limit amount to 32 bit
-	if(abs(amount)> 0xffffffff):
-		file_cleanup(file_open,key,filepath)
-		reset_sums()
-		reset_entries_counter()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}), 422
-
-	#confirm amount is limited to at most 2 decimal places (51.32 makes sense, 51.323 doesnt)
-	if(len(str(amount).split('.')[-1]) > 2):
-		file_cleanup(file_open,key,filepath)
-		reset_sums()
-		reset_entries_counter()
-		return jsonify({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}), 422
-
-	return amount
-'''
+######################################################################################################################

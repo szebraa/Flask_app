@@ -76,6 +76,25 @@ class Helpers:
         mock_request_file = ImmutableMultiDict(mock_request_file)
         return mock_request_file
 
+    #process opening and decoding file
+    @staticmethod
+    def open_and_decode_file(filename: list, abs_path: str, file_data: list, expected: tuple, num_of_files: int,key:str):
+        i = 0
+        types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
+        for content in filename:
+            content_list = content.split(".")
+            types_of_content.append(content_list[-1].lower())
+            file_loc.append(Helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
+            mock_request_file = Helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            file_open.append(util.open_file(file_loc[i], os.O_RDONLY))
+            byte_len.append(os.stat(file_loc[i]).st_size)
+            file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            file_contents.append(file[i].split('\n')[:-1])
+            i+=1
+        return [file_open,file_loc,file_contents,expected]
+
+
+
 
 #all these methods can be inferred by other test files to access the capabilities modules
 
@@ -94,18 +113,6 @@ def current_app():
 @pytest.fixture
 def helpers():
     return Helpers
-
-@pytest.fixture
-def file_storage():
-    return RequestFiles
-
-@pytest.fixture
-def multi_dict():
-    return MultiDict
-
-@pytest.fixture
-def immutable_multi_dict():
-    return ImmutableMultiDict
 
 @pytest.fixture
 def client(app):

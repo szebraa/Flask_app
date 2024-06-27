@@ -1,3 +1,4 @@
+#unit test for utils.py file
 import pytest, os, io 
 from decimal import Decimal
 from pytest_cases import parametrize, parametrize_with_cases
@@ -283,37 +284,3 @@ class Test_utils:
             os.remove(file_loc)
         assert (res[0].json,res[1]) == expected    
 
-    '''
-    #function to verify amount provided is: valid float, <=32 bits, < 2 decimal places
-    def process_amount(amount,file_open,key,filepath):
-        #assumptions: no $ symbol infront of the values in csv file, no commas present in the amount field (e.g.: 1,23), scientific notation not valid
-
-        #check if valid float
-        invalid_amount = False
-        try:
-            float(amount)
-        except ValueError:
-            invalid_amount = True
-        if(invalid_amount):
-            file_cleanup(file_open,key,filepath)
-            reset_sums()
-            reset_entries_counter()
-            return jsonify({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}), 422
-        amount = float(amount)
-
-        #limit amount to 32 bit
-        if(abs(amount)> 0xffffffff):
-            file_cleanup(file_open,key,filepath)
-            reset_sums()
-            reset_entries_counter()
-            return jsonify({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}), 422
-
-        #confirm amount is limited to at most 2 decimal places (51.32 makes sense, 51.323 doesnt)
-        if(len(str(amount).split('.')[-1]) > 2):
-            file_cleanup(file_open,key,filepath)
-            reset_sums()
-            reset_entries_counter()
-            return jsonify({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}), 422
-
-        return amount
-    '''
