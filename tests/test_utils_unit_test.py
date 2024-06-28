@@ -60,86 +60,46 @@ class Test_utils:
     @parametrize_with_cases("mock_file_fields", cases=utils_cases, has_tag='val_rows_and_fields', import_fixtures = True)
     def test_process_csv_row(self,utils,helpers,mock_file_fields):
         expected = True
-        res = False
-        file_open, file_loc, file_contents = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2]
-        for line in file_contents:
-            #check only col A-D filled
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(list_entry) == list):
-                res = True
-            else:
-                res = False
-                break
-        os.remove(file_loc)
+        file_open, file_loc, file_contents, process, flag = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2], "csv_row", False
+        check = list
+        res = helpers.process_valid_lines(file_open, file_loc, file_contents, process, type_check = check, err_flag = flag)
         assert res == expected
 
     #validate date fields for valid dates (same yr + yyyy-mm-dd format)
     @parametrize_with_cases("mock_file_fields", cases=utils_cases, has_tag='val_rows_and_fields', import_fixtures = True)
     def test_verify_date(self,utils,helpers,mock_file_fields):
         expected = None
-        res = True
         year = []
-        file_open, file_loc, file_contents = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2]
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            date = list_entry[0].lower().strip()
-            res = utils.verify_date(date,file_open,year,helpers.get_file_storage_key(),file_loc)
-            if(res):
-                res = True
-                break   
-        os.remove(file_loc)
+        field_key,type_check,method = 0, type(None), 'util.verify_date(field,file_open,year_list,Helpers.get_file_storage_key(),file_loc)'
+        file_open, file_loc, file_contents, process, err_flag, exp_flag = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2], "fields", True, None
+        res = helpers.process_valid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag, exp_flag, year)
         assert res == expected
     
     #validate type field with valid type (expense/income)
     @parametrize_with_cases("mock_file_fields", cases=utils_cases, has_tag='val_rows_and_fields', import_fixtures = True)
     def test_process_type(self,utils,helpers,mock_file_fields):
         expected = True
-        res = False
-        file_open, file_loc, file_contents = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2]
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            val_type = list_entry[1].lower().strip()
-            res = utils.process_type(val_type,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(res) == int):
-                res = True
-            else:
-                res = False
-                break
-        os.remove(file_loc)
+        field_key,type_check,method = 1, int, 'util.process_type(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        file_open, file_loc, file_contents, process, err_flag, exp_flag = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2], "fields", False, True
+        res = helpers.process_valid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag, exp_flag)
         assert res == expected
 
     #validate memo field with valid memo (at least 1 char)
     @parametrize_with_cases("mock_file_fields", cases=utils_cases, has_tag='val_rows_and_fields', import_fixtures = True)
     def test_process_memo(self,utils,helpers,mock_file_fields):
         expected = None
-        res = True
-        file_open, file_loc, file_contents = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2]
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            memo = list_entry[3].lower().strip()
-            res = utils.process_memo(memo,file_open,helpers.get_file_storage_key(),file_loc)
-            if(res):
-                res = True
-                break
-        os.remove(file_loc)
+        field_key,type_check,method = 3, type(None), 'util.process_memo(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        file_open, file_loc, file_contents, process, err_flag, exp_flag = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2], "fields", True, None
+        res = helpers.process_valid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag, exp_flag)
         assert res == expected
 
     #validate amount field with valid amount
     @parametrize_with_cases("mock_file_fields", cases=utils_cases, has_tag='val_rows_and_fields', import_fixtures = True)
     def test_process_amount(self,utils,helpers,mock_file_fields):
         expected = True
-        res = False
-        file_open, file_loc, file_contents = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2]
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            amount = list_entry[2].strip()
-            res = utils.process_amount(amount,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(res) == float):
-                res = True
-            else:
-                res = False
-                break
-        os.remove(file_loc)
+        field_key,type_check,method = 2, float, 'util.process_amount(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        file_open, file_loc, file_contents, process, err_flag, exp_flag = mock_file_fields[0], mock_file_fields[1], mock_file_fields[2], "fields", False, True
+        res = helpers.process_valid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag, exp_flag)
         assert res == expected
     
     #validate sum of all expenses and income for current app
@@ -214,19 +174,9 @@ class Test_utils:
     #validate exceptions for invalid rows
     @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_rows', import_fixtures = True)
     def test_validate_invalid_rows(self,utils,helpers,app,current_app,test_file_info):
-        #[file_open,file_loc,file_contents,expected]
-        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
-
-        for line in file_contents:
-            #check only col A-D filled
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(list_entry) == list):
-                res = True
-            else:
-                res = list_entry
-                break
-        if(os.path.isfile(file_loc)):
-            os.remove(file_loc)
+        file_open, file_loc, file_contents, expected, process, flag = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3], "csv_row", False
+        check = list
+        res = helpers.process_invalid_lines(file_open, file_loc, file_contents, process, type_check = check, err_flag = flag)
         expected_str = str(expected[0])[:-2] + str(current_app.config.get('entries',0)+1) + "'" + "}" 
         expected = (eval(expected_str), expected[1])
         assert (res[0].json,res[1]) == expected
@@ -235,72 +185,43 @@ class Test_utils:
     #validate exceptions for invalid date
     @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_date', import_fixtures = True)
     def test_validate_invalid_date(self,utils,helpers,app,current_app,test_file_info):
-        #[file_open,file_loc,file_contents,expected]
-        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
+        #input: [file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected, process, err_flag = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3], "fields", True
         year_list = []
-
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            date = list_entry[0].lower().strip()
-            res = utils.verify_date(date,file_open,year_list,helpers.get_file_storage_key(),file_loc)
-            if(res):
-                break
-        if(os.path.isfile(file_loc)):
-            os.remove(file_loc)
+        field_key,type_check,method = 0, type(None), 'util.verify_date(field,file_open,year_list,Helpers.get_file_storage_key(),file_loc)'
+        res = helpers.process_invalid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag, year_list)
         assert (res[0].json,res[1]) == expected
 
     #cases: 1) Not either income or expense
     #validate exceptions for invalid type field
     @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_type', import_fixtures = True)
     def test_validate_invalid_type(self,utils,helpers,app,current_app,test_file_info):
-        #[file_open,file_loc,file_contents,expected]
-        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
-
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            val_type = list_entry[1].lower().strip()
-            res = utils.process_type(val_type,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(res)!=int):
-                break
-        if(os.path.isfile(file_loc)):
-            os.remove(file_loc)
-        assert (res[0].json,res[1]) == expected   
+        #input: [file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected, process, err_flag = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3], "fields", False
+        field_key,type_check,method = 1, int, 'util.process_type(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        res = helpers.process_invalid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag)
+        assert (res[0].json,res[1]) == expected
 
 
     #cases: 1) No chars a-z/A-Z used
     #validate exceptions for invalid memo
     @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_memo', import_fixtures = True)
     def test_validate_invalid_memo(self,utils,helpers,app,current_app,test_file_info):
-        #[file_open,file_loc,file_contents,expected]
-        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
-
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            memo = list_entry[3].lower().strip()
-            res = utils.process_memo(memo,file_open,helpers.get_file_storage_key(),file_loc)
-            if(res):
-                break
-        if(os.path.isfile(file_loc)):
-            os.remove(file_loc)
-        assert (res[0].json,res[1]) == expected    
+        #input: [file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected, process, err_flag = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3], "fields", True
+        field_key,type_check,method = 3, type(None), 'util.process_memo(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        res = helpers.process_invalid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag)
+        assert (res[0].json,res[1]) == expected
 
 
     #cases: 1) valid float (no $), 2) <=32 bits, 3) < 2 decimal places, 4) scientific notation
     #validate exception for invalid amounts used
     @parametrize_with_cases("test_file_info", cases=utils_cases, has_tag='val_invalid_amount', import_fixtures = True)
     def test_validate_invalid_amount(self,utils,helpers,app,current_app,test_file_info):
-        #[file_open,file_loc,file_contents,expected]
-        file_open, file_loc, file_contents, expected = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3]
-
-        for line in file_contents:
-            list_entry = utils.process_csv_row(line,file_open,helpers.get_file_storage_key(),file_loc)
-            amount = list_entry[2].lower().strip()
-            #process_amount
-            res = utils.process_amount(amount,file_open,helpers.get_file_storage_key(),file_loc)
-            if(type(res)!=float):
-                break
-        if(os.path.isfile(file_loc)):
-            os.remove(file_loc)
-        assert (res[0].json,res[1]) == expected    
+        #input: [file_open,file_loc,file_contents,expected]
+        file_open, file_loc, file_contents, expected, process, err_flag = test_file_info[0][0], test_file_info[1][0], test_file_info[2][0], test_file_info[3], "fields", False
+        field_key,type_check,method = 2, float, 'util.process_amount(field,file_open,Helpers.get_file_storage_key(),file_loc)'
+        res = helpers.process_invalid_lines(file_open, file_loc, file_contents, process, field_key, type_check, method, err_flag)
+        assert (res[0].json,res[1]) == expected
 
 ###########################################################################################################################################################################

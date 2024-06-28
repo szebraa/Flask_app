@@ -87,35 +87,32 @@ class Helpers:
         mock_request_file = ImmutableMultiDict(mock_request_file)
         return mock_request_file
 
-    #this is a prototype for now (its not used... But I may want to consider using it to reduce the test_utils_unit_test file for happy cases)
+    #Used to reduce the test_utils_unit_test file for happy cases for csv row processing
     @staticmethod
-    def process_valid_lines(file_open: bytes, file_loc: str, file_contents: list, process: str, field_assign: str = None, type_check: object = None, method: str = None):
-        res = False
+    def process_valid_lines(file_open: bytes, file_loc: str, file_contents: list, process: str, field_key: int = None, type_check: object = None, method: str = None, err_flag = None, exp_flag = None, year_list: list = None):
+        res = err_flag
         for line in file_contents:
-            list_entry = eval(method) #util.process_csv_row(line,file_open,Helpers.get_file_storage_key(),file_loc)
+            #process the row in csv file
+            list_entry = util.process_csv_row(line,file_open,Helpers.get_file_storage_key(),file_loc)
             #check only col A-D filled    
             if(process == "csv_row"):
-                if(type(list_entry) == list):
+                if(type(list_entry) == type_check):
                     res = True
                 else:
-                    res = False
+                    res = err_flag
                     break
-            
+            #check fields (date, val_type, amount, memo) inputed correctly
             elif(process == "fields"):
                 #do loop to check specific fields
-                #replace this with exec command
-                exec(field_assign)
-                #val_type = list_entry[1].lower().strip()
-                #replace with with eval
-                #res = utils.process_type(val_type,file_open,helpers.get_file_storage_key(),file_loc)
+                #keys: 0 = date, 1 = val_type (expense/income), 2 = amount, 3 = memo
+                field = list_entry[field_key].lower().strip()
                 res = eval(method)
                 if(type(res) == type_check):
-                    res = True
+                    res = exp_flag
                 else:
-                    res = False
+                    res = err_flag
                     break
-        #os.remove(file_loc)
-        #assert res == expected
+        os.remove(file_loc)
         return res
 
 
@@ -140,6 +137,32 @@ class Helpers:
             i+=1
         return [file_open,file_loc,file_contents,expected]
 
+
+
+
+    #Used to reduce the test_utils_unit_test file for exception cases for csv row processing
+    @staticmethod
+    def process_invalid_lines(file_open: bytes, file_loc: str, file_contents: list, process: str, field_key: int = None, type_check: object = None, method: str = None, err_flag = None, year_list: list = None):
+        res = err_flag
+        for line in file_contents:
+            #process the row in csv file
+            list_entry = util.process_csv_row(line,file_open,Helpers.get_file_storage_key(),file_loc)
+            #check only col A-D filled    
+            if(process == "csv_row"):
+                if(type(list_entry) != type_check):
+                    res = list_entry
+                    break
+            #check fields (date, val_type, amount, memo) inputed correctly
+            elif(process == "fields"):
+                #do loop to check specific fields
+                #keys: 0 = date, 1 = val_type (expense/income), 2 = amount, 3 = memo
+                field = list_entry[field_key].lower().strip()
+                res = eval(method)
+                if(type(res) != type_check):
+                    break
+        if(os.path.isfile(file_loc)):
+            os.remove(file_loc)
+        return res
 
 
 
