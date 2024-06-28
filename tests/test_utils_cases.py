@@ -1,3 +1,7 @@
+"""
+This file is used to generate custom test cases (except + happy cases) for the
+'test_utils_unit_test.py' file
+"""
 #unit test testcase file
 from pytest_cases import parametrize, parametrize_with_cases, case
 import os
@@ -70,6 +74,8 @@ invalid_csv_file_testcase_5 = [valid_key,tmp_test_path,[True],["test69.csv"],exp
 
 tmp_path = "/tmp/"
 
+
+#all missing columns case (A-D)
 csv_testcase_3 = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
 ['2020-07-04',' Income','40', ' 347 Woodrow'],
 ["", "", "","",'2020-07-06',' Income','15', '  219 Pleasant'],

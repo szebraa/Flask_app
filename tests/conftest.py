@@ -1,3 +1,12 @@
+"""
+This file is used to 1) Create common fixtures for all "test_" modules
+2) Create a Helper class that can be used to get constants from config.py,
+create csv files, create mock ImmutableMultiDict FileStorage objects,
+and perform file decoding (utf-8 compliant)
+
+"""
+
+
 import pytest, sys, os, csv
 from api import utils as util
 from api import config as configs
@@ -17,7 +26,7 @@ sys.path.append(api_dir)
 from app import app as flask_app
 from flask import current_app as cur
 
-
+#needed for creating ImmutableMultiDict Filestorage objects (i.e.: Flask Request Files)
 from werkzeug.datastructures import FileStorage as RequestFiles
 from werkzeug.datastructures import MultiDict, ImmutableMultiDict
 
@@ -31,12 +40,14 @@ class Helpers:
     def get_filepath():
         return configs.filepath
     
+    #method used to create csv file based on either input data, default data, or empty data
     @staticmethod
     def gen_file(file_type: str,abs_path: str,filename: str,input_data: List[List[Union[str,float]]] = None):
         #default data
         if(not input_data):
-            input_data = [['    2020-07-01   ','expense', 18.77, 'Fuel'],
-            ['2020-07-04',' Income',40, ' 347 Woodrow']]
+            input_data = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
+            ['2020-07-04',' Income','40', ' 347 Woodrow']]
+        #case where we want no input data
         elif(type(input_data) == bool):
             input_data = []
         file_loc = abs_path + filename  if abs_path[-1] == '/' else  abs_path + "/" + filename
@@ -76,6 +87,38 @@ class Helpers:
         mock_request_file = ImmutableMultiDict(mock_request_file)
         return mock_request_file
 
+    #this is a prototype for now (its not used... But I may want to consider using it to reduce the test_utils_unit_test file for happy cases)
+    @staticmethod
+    def process_valid_lines(file_open: bytes, file_loc: str, file_contents: list, process: str, field_assign: str = None, type_check: object = None, method: str = None):
+        res = False
+        for line in file_contents:
+            list_entry = eval(method) #util.process_csv_row(line,file_open,Helpers.get_file_storage_key(),file_loc)
+            #check only col A-D filled    
+            if(process == "csv_row"):
+                if(type(list_entry) == list):
+                    res = True
+                else:
+                    res = False
+                    break
+            
+            elif(process == "fields"):
+                #do loop to check specific fields
+                #replace this with exec command
+                exec(field_assign)
+                #val_type = list_entry[1].lower().strip()
+                #replace with with eval
+                #res = utils.process_type(val_type,file_open,helpers.get_file_storage_key(),file_loc)
+                res = eval(method)
+                if(type(res) == type_check):
+                    res = True
+                else:
+                    res = False
+                    break
+        #os.remove(file_loc)
+        #assert res == expected
+        return res
+
+
     #process opening and decoding file
     @staticmethod
     def open_and_decode_file(filename: list, abs_path: str, file_data: list, expected: tuple, num_of_files: int,key:str):
@@ -83,12 +126,16 @@ class Helpers:
         types_of_content, file_loc, file_open, byte_len, file, file_contents = [], [], [], [], [], []
         for content in filename:
             content_list = content.split(".")
+            #get file ext
             types_of_content.append(content_list[-1].lower())
+            #abs path + filename
             file_loc.append(Helpers.gen_file(types_of_content[i],abs_path,content,file_data[i]))
             mock_request_file = Helpers.gen_mock_request_file(file_loc,filename,types_of_content, num_of_files,key)
+            #open file and decode (utf-8)
             file_open.append(util.open_file(file_loc[i], os.O_RDONLY))
             byte_len.append(os.stat(file_loc[i]).st_size)
             file.append(os.read(file_open[i],byte_len[i]).decode('utf-8'))
+            #remove new line characters
             file_contents.append(file[i].split('\n')[:-1])
             i+=1
         return [file_open,file_loc,file_contents,expected]
@@ -96,7 +143,7 @@ class Helpers:
 
 
 
-#all these methods can be inferred by other test files to access the capabilities modules
+#all these methods can be inferred by other 'test_' files to access the capabilities of these modules
 
 @pytest.fixture
 def app():
