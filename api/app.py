@@ -39,7 +39,7 @@ def store_transactions():
 		#reset gross revenue, expenses, net revenue, row entry, and calculated state for every new POST
 		utils.reset_sums()
 		utils.reset_entries_counter()
-
+		#return (str(request.files))
 		#check: if file exists -> .csv ext -> 0<size<=16mb
 		resp = utils.validate_file(request.files,config.file_storage_key,config.filepath)
 		
