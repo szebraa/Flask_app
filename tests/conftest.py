@@ -163,6 +163,21 @@ class Helpers:
         if(os.path.isfile(file_loc)):
             os.remove(file_loc)
         return res
+    
+    #method to make a 16MB file
+    @staticmethod
+    def write_big_file(file_type: str,abs_path: str,filename: str):
+        file_loc = abs_path + filename  if abs_path[-1] == '/' else  abs_path + "/" + filename
+        if(not os.path.exists(abs_path)):
+            os.makedirs(abs_path)
+        if(file_type == 'csv' or file_type == 'txt'):
+            f = open(file_loc,"wb")
+            f.seek(16777028)
+            f.write(b"\0")
+            f.close()
+            return file_loc
+        else:
+            return
 
 
 
