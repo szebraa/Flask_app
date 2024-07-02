@@ -42,7 +42,7 @@ class Helpers:
     
     #method used to create csv file based on either input data, default data, or empty data
     @staticmethod
-    def gen_file(file_type: str,abs_path: str,filename: str,input_data: List[List[Union[str,float]]] = None):
+    def gen_file(file_type: str,abs_path: str,filename: str,input_data: List[List[Union[str,float]]] = None,enc_type: str = "utf-8"):
         #default data
         if(not input_data):
             input_data = [['    2020-07-01   ','expense', '18.77', 'Fuel'],
@@ -55,7 +55,7 @@ class Helpers:
         if(not os.path.exists(abs_path)):
              os.makedirs(abs_path)
         if(file_type == 'csv' or file_type == 'txt'):
-            with open(file_loc,"w",newline='') as file:
+            with open(file_loc,"w",newline='', encoding=enc_type) as file:
                 writer = csv.writer(file)
                 for data in input_data:
                     writer.writerow(data)
@@ -179,6 +179,7 @@ class Helpers:
         else:
             return
 
+    
 
 
 #all these methods can be inferred by other 'test_' files to access the capabilities of these modules
