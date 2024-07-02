@@ -492,9 +492,298 @@ class Test_app:
 
     ####################################################### DATE FIELD CASES ####################################################################
 
-    # 3)Incorrectly formatted date, format as yyyy-mm-dd
+    # 3)Incorrectly formatted date, format as yyyy-mm-dd, 4)Date entries are not all from the same year
 
 
+    #test invalid transactions POST, case 3: Incorrectly formatted date, format as yyyy-mm-dd
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_date_field1', import_fixtures = True)
+    def test_post_inval_date_transactions1(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'incorrectly formatted date, format as yyyy-mm-dd'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 3: Incorrectly formatted date, format as yyyy-mm-dd
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_date_field1', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions10(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+
+    #test invalid transactions POST, case 4: Date entries are not all from the same year
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_date_field2', import_fixtures = True)
+    def test_post_inval_date_transactions2(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'Please ensure all entries are from the same year'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 4: Date entries are not all from the same year
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_date_field2', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions11(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+    
+
+
+    ####################################################### TYPE FIELD CASES ####################################################################
+
+    # 5)Type field is incorrectly formatted type; specify either 'expense' or 'income'
+
+    #test invalid transactions POST, case 5: Type field is incorrectly formatted type; specify either 'expense' or 'income'
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_type_field1', import_fixtures = True)
+    def test_post_inval_type_transactions1(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'incorrectly formatted type, please specify either expense or income'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 5: Type field is incorrectly formatted type; specify either 'expense' or 'income'
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_type_field1', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions12(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+
+    ####################################################### MEMO FIELD CASES ####################################################################
+
+    # 6)Memo field does not have any English characters (a-z)
+
+    #test invalid transactions POST, case 6: Memo field does not have any English characters (a-z)
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_memo_field1', import_fixtures = True)
+    def test_post_inval_memo_transactions1(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'your memo does not have any english characters (a-z), which does not make sense'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 6: Memo field does not have any English characters (a-z)
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_memo_field1', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions13(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+
+    ####################################################### AMOUNT FIELD CASES ####################################################################
+
+    # 7)Amount field an invalid float ($ not accepted), 8) Amount field is > 32 bits, 9) Amount field is > 2 decimal places, 10) Amount field is in scientific notation
+
+    #test invalid transactions POST, case 7: Amount field an invalid float ($ not accepted)
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field1', import_fixtures = True)
+    def test_post_inval_amount_transactions1(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. please ensure to put just the numerical value (e.g.: 50.2 or 50 or 50.79) with no $ preceeding the value'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 7: Amount field an invalid float ($ not accepted)
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field1', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions14(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+
+    #test invalid transactions POST, case 8: Amount field is > 32 bits
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field2', import_fixtures = True)
+    def test_post_inval_amount_transactions2(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'Please input a realistic value in the amount field (>32 bit number is not realistic for your income or expense)'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 8: Amount field is > 32 bits
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field2', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions15(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+    #test invalid transactions POST, case 9: Amount field is > 2 decimal places
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field3', import_fixtures = True)
+    def test_post_inval_amount_transactions3(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'your amount has more than 2 decimal places which is not a real life money value. Please format to 2 decimal places or less (avoid scientific notation)'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 9: Amount field is > 2 decimal places
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field3', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions16(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
+
+    #test invalid transactions POST, case 10: Amount field is in scientific notation
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field4', import_fixtures = True)
+    def test_post_inval_amount_transactions4(self,client,created_file):
+        expected = ({'request':'transactions', 'status': 'failed','result':'your amount is not formatted properly. Please dont use scientific notation'}, 422)  
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+        resp = client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == (resp.json,resp.status_code)
+
+    #test GET report following an invalid transactions POST, case 10: Amount field is in scientific notation
+    @parametrize_with_cases("created_file", cases=app_cases, has_tag='inval_amount_field4', import_fixtures = True)
+    def test_get_report_after_failed_post_transactions17(self,client,created_file):
+        expected = 204
+        # Convert csv file to bytes then send in the format the form expects
+        csv,filename = created_file[0], created_file[1]
+        data = {"data": (csv, filename)}
+
+        client.post(
+            "/api/transactions",
+            content_type='multipart/form-data',
+            data=data,
+            )
+        resp = client.get("/api/report")
+        #if(os.path.isfile(csv)):
+            #os.remove(csv)
+        assert expected == resp.status_code
 
 
 
