@@ -34,11 +34,11 @@ class Helpers:
 
     @staticmethod
     def get_file_storage_key():
-        return configs.file_storage_key
+        return configs.FILE_STORAGE_KEY
 
     @staticmethod
     def get_filepath():
-        return configs.filepath
+        return configs.FILEPATH
     
     #method used to create csv file based on either input data, default data, or empty data
     @staticmethod

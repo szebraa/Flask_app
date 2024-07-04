@@ -221,13 +221,13 @@ class utils_cases:
 
     ########################### exception cases #############################################################
 
-    #gen mock expenses and revenue testcases
+    #gen invalid file paths
     @case(tags="exception_files")
     @parametrize(test_file_path=(invalid_filepath_testcases[0],invalid_filepath_testcases[1],invalid_filepath_testcases[2]))
     def case_validate_file_exceptions(self,test_file_path):
         return test_file_path
     
-
+    #cases: 1) more than 1 csv file at a time, 2) diff key other than data being used, 3)empty file name, 4) not csv ext, 5) empty file size
     #gen mock [request_files,key,filepath,expected]
     @case(tags="invalid_csv_files")
     @parametrize(test_file_info=(invalid_csv_file_testcase_1,invalid_csv_file_testcase_2,invalid_csv_file_testcase_3,invalid_csv_file_testcase_4,invalid_csv_file_testcase_5))

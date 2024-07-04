@@ -57,7 +57,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV '/var/www/Canonical-flask-app/.venv'
+set -gx VIRTUAL_ENV '/home/Canonical-flask-app/.venv'
 
 # https://github.com/fish-shell/fish-shell/issues/436 altered PATH handling
 if test (echo $FISH_VERSION | head -c 1) -lt 3
@@ -87,8 +87,8 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
 
         # Prompt override provided?
         # If not, just prepend the environment name.
-        if test -n '(Canonical-flask-app)'
-            printf '%s%s' '(Canonical-flask-app)' (set_color normal)
+        if test -n ''
+            printf '%s%s' '' (set_color normal)
         else
             printf '%s(%s) ' (set_color normal) (basename "$VIRTUAL_ENV")
         end

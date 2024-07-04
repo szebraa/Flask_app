@@ -4,7 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
+flask = "==2.2.5"
+flake8 = "==7.1.0"
+pylint = "==3.2.3"
+autopep8 = "==2.3.0"
+pytest = "==8.2.2"
+pytest-cases = "==3.8.5"
+multidict = "==6.0.5"
 
 [dev-packages]
 

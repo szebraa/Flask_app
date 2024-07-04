@@ -25,6 +25,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsg
 #want to copy over all required files and change dir
 COPY ./api/* /var/www/Canonical-flask-app/api/
 COPY ./ssl_certs/* /var/www/Canonical-flask-app/ssl_certs/
+COPY ./tests/* /var/www/Canonical-flask-app/tests/
 COPY * /var/www/Canonical-flask-app/
 WORKDIR "/var/www/Canonical-flask-app/"
 #RUN echo ls -laRt

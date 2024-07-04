@@ -1,3 +1,4 @@
-#constants
-filepath = "/tmp/tmp.csv"
-file_storage_key = 'data'
+"""Module for naming constants"""
+# constants
+FILEPATH = "/tmp/tmp.csv"
+FILE_STORAGE_KEY = 'data'
