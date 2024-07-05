@@ -26,6 +26,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 libapache2-mod-wsg
 COPY ./api/* /var/www/Canonical-flask-app/api/
 COPY ./ssl_certs/* /var/www/Canonical-flask-app/ssl_certs/
 COPY ./tests/* /var/www/Canonical-flask-app/tests/
+COPY .flake8 /var/www/Canonical-flask-app/.flake8
+COPY .pylintrc /var/www/Canonical-flask-app/.pylintrc
 COPY * /var/www/Canonical-flask-app/
 WORKDIR "/var/www/Canonical-flask-app/"
 #RUN echo ls -laRt
@@ -60,7 +62,8 @@ RUN chmod 777 -R /var/www/
 EXPOSE 443
 
 #remove unpacked ssl certs, app.py, util and wsgi files from api and ssl certs folder
-RUN sudo rm *.py *.wsgi *.csr *.crt *.key *.org
+RUN sudo rm *.py *.wsgi *.csr *.crt *.key *.org *.md CACHEDIR.TAG
+RUN sudo rm -rf .pytest_cache v
 
 WORKDIR "/var/www/Canonical-flask-app/api/"
 ENV PATH="/var/www/Canonical-flask-app/.venv/bin:$PATH"
