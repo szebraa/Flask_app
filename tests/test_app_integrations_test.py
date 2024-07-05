@@ -88,7 +88,7 @@ class Test_app:
     #test invalid transactions POST, case 1: more than 1 csv file at a time
     @parametrize_with_cases("created_file", cases=app_cases, has_tag='val_post_files', import_fixtures = True)
     def test_post_2_simult_files_transactions(self,client,created_file):
-        expected = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -X POST http://127.0.0.1:5000/transactions -F "data=@data.csv" '}, 400)
+        expected = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -v -X POST -k https://127.0.0.1/api/transactions -F "data=@data.csv" '}, 400)
         # Convert csv file to bytes then send in the format the form expects
         csv,filename = created_file[0], created_file[1]
         data = {"data": [(csv, filename),(csv, filename)]}
@@ -119,7 +119,7 @@ class Test_app:
     #test invalid transactions POST, case 2: diff key other than data being used
     @parametrize_with_cases("created_file", cases=app_cases, has_tag='val_post_files', import_fixtures = True)
     def test_post_inval_key_transactions(self,client,created_file):
-        expected = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -X POST http://127.0.0.1:5000/transactions -F "data=@data.csv" '}, 400)
+        expected = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -v -X POST -k https://127.0.0.1/api/transactions -F "data=@data.csv" '}, 400)
         # Convert csv file to bytes then send in the format the form expects
         csv,filename = created_file[0], created_file[1]
         data = {"file": (csv, filename)}

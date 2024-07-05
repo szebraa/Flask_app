@@ -36,7 +36,7 @@ grossRevenues_testcase_3 = [-10.34,-100.23,-180.11,-32.11,-10.44,-1.00]
 
 ########################### EXCEPTION TESTCASES ##########################################################
 
-expected_resp_1 = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -X POST http://127.0.0.1:5000/transactions -F "data=@data.csv" '}, 400)
+expected_resp_1 = ({'request':'transactions', 'status': 'failed','result':'file not submitted correctly, use the following syntax: curl -v -X POST -k https://127.0.0.1/api/transactions -F "data=@data.csv" '}, 400)
 expected_resp_2 = ({'request':'transactions', 'status': 'failed','result':'filename is empty, dont use special characters/only spaces when naming your csv file" '}, 400)
 expected_resp_3 = ({'request':'transactions', 'status': 'failed','result':'incorrect file extension, ensure csv file is submitted'}, 415)
 expected_resp_4 = ({'request':'transactions', 'status': 'failed','result':'input file is empty'}, 404)
