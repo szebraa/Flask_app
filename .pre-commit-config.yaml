@@ -15,7 +15,6 @@ repos:
     -   id: flake8
         args:
         - '--config=.flake8'
-        - 'python3 -m flake8 *'
         name: flake8
         language: system
         entry: flake8
