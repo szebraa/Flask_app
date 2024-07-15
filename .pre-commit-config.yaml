@@ -14,7 +14,7 @@ repos:
     hooks:
     -   id: flake8
         args:
-        - '--config=.flake8'
+        - '--config=/home/Canonical-flask-app/.flake8'
         name: flake8
         language: system
         entry: flake8
@@ -22,7 +22,7 @@ repos:
         stages: [commit]
     -   id: pylint
         args:
-        - '--config=.pylintrc'
+        - '--config=/home/Canonical-flask-app/.pylintrc'
         name: pylint
         language: system
         entry: pylint
