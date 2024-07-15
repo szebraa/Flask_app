@@ -210,13 +210,13 @@ class utils_cases:
         file_contents= file.split('\n')[:-1]
         return [file_open,file_loc,file_contents]
 
-    
+
     #gen mock expenses and revenue testcases
     @case(tags="val_update_results")
     @parametrize(expenses_revenues=([expenses_testcase_1,grossRevenues_testcase_1], [expenses_testcase_2,grossRevenues_testcase_2],[expenses_testcase_3,grossRevenues_testcase_3]))
     def case_validate_valid_update_results(self,expenses_revenues):
         return [expenses_revenues[0],expenses_revenues[1]]
-    
+
     #########################################################################################################
 
     ########################### exception cases #############################################################
@@ -226,7 +226,7 @@ class utils_cases:
     @parametrize(test_file_path=(invalid_filepath_testcases[0],invalid_filepath_testcases[1],invalid_filepath_testcases[2]))
     def case_validate_file_exceptions(self,test_file_path):
         return test_file_path
-    
+
     #cases: 1) more than 1 csv file at a time, 2) diff key other than data being used, 3)empty file name, 4) not csv ext, 5) empty file size
     #gen mock [request_files,key,filepath,expected]
     @case(tags="invalid_csv_files")
