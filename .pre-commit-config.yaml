@@ -22,7 +22,10 @@ repos:
         stages: [commit]
     -   id: pylint
         args:
-        - '--config=/home/Canonical-flask-app/.pylintrc'
+          [
+            "--rcfile=/home/Canonical-flask-app/.pylintrc",
+            "--output-format=github",
+          ]
         name: pylint
         language: system
         entry: pylint
