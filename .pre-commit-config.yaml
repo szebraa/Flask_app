@@ -13,7 +13,7 @@ repos:
 -   repo: local
     hooks:
     -   id: flake8
-        args: [--config=/home/Canonical-flask-app/.flake8]
+        args: [--config=.flake8]
         name: flake8
         language: system
         entry: flake8
