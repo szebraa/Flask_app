@@ -16,6 +16,8 @@ jobs:
         python-version: "3.8"
     - name: flake8 Lint
       uses: py-actions/flake8@v2
+      with:
+        extra_args: flake8 --all-files
     #- uses: pre-commit/action@v3.0.1
       #with:
         #extra_args: flake8 --all-files
