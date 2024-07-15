@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
+.venv/lib/python3.8/site-packages/__pycache__/
 
 # C extensions
 *.so
