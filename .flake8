@@ -9,6 +9,7 @@ exclude =
         ssl_certs,
         templates,
         tests,
+        tests/*,
         .venv,
         *.yml,
         *.yaml,
