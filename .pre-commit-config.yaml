@@ -12,7 +12,7 @@ repos:
     hooks:
     -   id: flake8
         name: flake8
-        language: system
+        language: python_venv
         entry: flake8
         types: [python]
         stages: [commit]
