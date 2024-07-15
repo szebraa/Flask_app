@@ -28,7 +28,7 @@ def _deactivate(args):
 _deactivate(["nondestructive"])
 aliases["deactivate"] = _deactivate
 
-$VIRTUAL_ENV = r"/var/www/Canonical-flask-app/.venv"
+$VIRTUAL_ENV = r"/home/Canonical-flask-app/.venv"
 
 $_OLD_VIRTUAL_PATH = $PATH
 $PATH = $PATH[:]
@@ -39,7 +39,7 @@ if ${...}.get("PYTHONHOME", ""):
     $_OLD_VIRTUAL_PYTHONHOME = $PYTHONHOME
     del $PYTHONHOME
 
-$VIRTUAL_ENV_PROMPT = "(Canonical-flask-app)"
+$VIRTUAL_ENV_PROMPT = ""
 if not $VIRTUAL_ENV_PROMPT:
     del $VIRTUAL_ENV_PROMPT
 

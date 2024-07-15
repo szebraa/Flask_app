@@ -42,11 +42,11 @@ if (!$env:VIRTUAL_ENV_DISABLE_PROMPT) {
     }
     $function:_old_virtual_prompt = $function:prompt
 
-    if ("(Canonical-flask-app)" -ne "") {
+    if ("" -ne "") {
         function global:prompt {
             # Add the custom prefix to the existing prompt
             $previous_prompt_value = & $function:_old_virtual_prompt
-            ("(Canonical-flask-app)" + $previous_prompt_value)
+            ("" + $previous_prompt_value)
         }
     }
     else {

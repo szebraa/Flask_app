@@ -1,0 +1,21 @@
+[flake8]
+exclude =
+        .git,
+        __pycache__,
+        apache2,
+        github,
+        logs,
+        static,
+        ssl_certs,
+        templates,
+        tests,
+        .venv,
+        *.yml,
+        *.pyc,
+        *.md,
+        *.Dockerfile,
+        .dockerignore,
+        api/__pycache__/,
+        api/.pytest_cache,
+        *wsgi,
+        Pipfile*
