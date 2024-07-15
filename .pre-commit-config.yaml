@@ -1,5 +1,7 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+    python: python3.8
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
@@ -11,8 +13,11 @@ repos:
 -   repo: local
     hooks:
     -   id: flake8
+        args:
+        - '--config=.flake8'
+        - 'python3 -m flake8 *'
         name: flake8
-        language: python_venv
+        language: system
         entry: flake8
         types: [python]
         stages: [commit]
