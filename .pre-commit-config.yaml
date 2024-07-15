@@ -20,3 +20,11 @@ repos:
         entry: flake8
         types: [python]
         stages: [commit]
+    -   id: pylint
+        args:
+        - '--config=.pylintrc'
+        name: pylint
+        language: system
+        entry: pylint
+        types: [python]
+        stages: [commit]
