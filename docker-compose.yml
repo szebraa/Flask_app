@@ -9,6 +9,4 @@ services:
     volumes:
       - ${PWD}/api:/var/www/Canonical-flask-app/api
       - ${PWD}/tests:/var/www/Canonical-flask-app/tests
-      - ${PWD}/.flake8:/var/www/Canonical-flask-app/.flake8
-      - ${PWD}/.pylintrc:/var/www/Canonical-flask-app/.pylintrc
     restart: always
