@@ -18,6 +18,6 @@ repos:
         - 'python3 -m flake8 *'
         name: flake8
         language: system
-        entry: flake8
+        entry: python3 -m flake8
         types: [python]
         stages: [commit]
