@@ -19,6 +19,3 @@ jobs:
     - name: Lint with flake8
       run: |
         python3 -m flake8 *
-    #- uses: pre-commit/action@v3.0.1
-      #with:
-        #extra_args: flake8 --all-files
