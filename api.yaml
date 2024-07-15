@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: throwawayrat68/canonical-flask-app-flask_api:myfirstimgpush
+        #volumeMounts:
+          #- name: api-dir
+            #mountPath: /var/www/Canonical-flask-app/api/
+        ports:
+        - containerPort: 443
+      #volumes:
+        #- name: api-dir
+          #hostPath:
+            #path: /home/Canonical-flask-app/api/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  type: NodePort
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 443
