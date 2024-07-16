@@ -27,3 +27,9 @@ jobs:
       - name: Local unit and integrations test
         run: |
           python3 -m pytest
+  deploy-docker-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the container
+        run: docker-compose up -d
