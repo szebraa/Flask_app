@@ -8,22 +8,23 @@ on:
     #branches-ignore: [master]
 
 jobs:
-  build: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
-    #- name: Install dependencies
-      #run: |
-        #python3 -m pip install --upgrade pip
-    - name: Install pipenv and Pipfile packages
-      uses: Pipfile
-      with:
-        python-version: 3.8
-    - name: do the thing
-      run: make
-    - name: Install project
-      run: |
-        pip install -e .
+  build-and-local-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      #- name: Install dependencies
+        #run: |
+          #python3 -m pip install --upgrade pip
+      - name: Install pipenv and Pipfile packages
+        uses: Pipfile
+        with:
+          python-version: 3.8
+      - name: do the thing
+        run: make
+      - name: Install project
+        run: |
+          pip install -e .
