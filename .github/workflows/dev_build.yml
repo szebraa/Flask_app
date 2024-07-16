@@ -24,3 +24,4 @@ jobs:
           python3 -m pip install --upgrade --no-cache-dir pip
           python -m pip install --no-cache-dir pipenv
           pipenv install
+          python3 -m pytest
