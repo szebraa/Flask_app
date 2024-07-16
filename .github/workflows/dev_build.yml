@@ -27,9 +27,12 @@ jobs:
       - name: Local unit and integrations test
         run: |
           python3 -m pytest
-  deploy-docker-container:
+  deploy-docker-container-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Build the container
         run: docker-compose up -d
+      - name: Docker container unit and integrations test
+        run: |
+          docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest
