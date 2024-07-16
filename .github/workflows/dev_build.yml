@@ -1,1 +1,29 @@
+# This workflow will install Python dependencies
+# After that the workflow will also run all unit tests and integration tests via pytest
 
+name: DEV - Build, deploy, unit and integration test
+
+on:
+  push:
+    #branches-ignore: [master]
+
+jobs:
+  build-and-local-test: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    #- name: Install dependencies
+      #run: |
+        #python3 -m pip install --upgrade pip
+    - name: Install pipenv and Pipfile packages
+      uses: Pipfile
+      with:
+        python-version: 3.8
+    - name: do the thing
+      run: make
+    - name: Install project
+      run: |
+        pip install -e .
