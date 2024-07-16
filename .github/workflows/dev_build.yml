@@ -21,7 +21,8 @@ jobs:
           python-version: '3.8'
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade --no-cache-dir pip
+          python -m pip install --no-cache-dir pipenv
           pipenv install
       - name: Install project
         run: |
