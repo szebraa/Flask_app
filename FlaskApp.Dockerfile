@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 #change ownership within /var/www
 RUN sudo addgroup webmasters
-#RUN sudo adduser $USER webmasters 
+#RUN sudo adduser $USER webmasters
 RUN sudo chown -R root:webmasters /var/www
 RUN sudo find /var/www -type d -exec chmod 775 {} \;
 RUN sudo find /var/www -type d -exec chmod g+s {} \;
@@ -62,7 +62,7 @@ RUN chmod 777 -R /var/www/
 EXPOSE 443
 
 #remove unpacked ssl certs, app.py, util and wsgi files from api and ssl certs folder
-RUN sudo rm *.py *.wsgi *.csr *.crt *.key *.org *.md CACHEDIR.TAG
+RUN sudo rm -f -- *.py *.wsgi *.csr *.crt *.key *.org *.md CACHEDIR.TAG
 RUN sudo rm -rf .pytest_cache v
 
 WORKDIR "/var/www/Canonical-flask-app/api/"
@@ -70,4 +70,3 @@ ENV PATH="/var/www/Canonical-flask-app/.venv/bin:$PATH"
 
 #run the Flask server
 CMD ["python3","app.py"]
-

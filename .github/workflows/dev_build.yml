@@ -1,1 +1,38 @@
+# This workflow will install Python dependencies
+# After that the workflow will also run all unit tests and integration tests via pytest
 
+name: DEV - Build, deploy, unit and integration test
+
+on:
+  push:
+    branches-ignore: [master]
+
+
+
+
+jobs:
+  build-and-local-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade --no-cache-dir pip
+          python -m pip install --no-cache-dir pipenv
+          pip install -r requirements.txt
+      - name: Local unit and integrations test
+        run: |
+          python3 -m pytest
+  deploy-docker-container-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the container
+        run: docker-compose up -d
+      - name: Docker container unit and integrations test
+        run: |
+          docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest
