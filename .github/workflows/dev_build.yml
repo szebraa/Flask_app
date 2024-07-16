@@ -19,15 +19,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-      #- name: Install dependencies
-        #run: |
-          #python3 -m pip install --upgrade pip
-      - name: Install pipenv and Pipfile packages
-        uses: szebraa/Flask_app@dd281cc5fd54c667f83866cab6d500a13dbf10e4
-        with:
-          python-version: 3.8
-      - name: do the thing
-        run: make
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pipenv install
       - name: Install project
         run: |
           pip install -e .
