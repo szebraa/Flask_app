@@ -23,7 +23,7 @@ jobs:
         #run: |
           #python3 -m pip install --upgrade pip
       - name: Install pipenv and Pipfile packages
-        uses: szebraa/Flask_app@Pipfile
+        uses: szebraa/Flask_app
         with:
           python-version: 3.8
       - name: do the thing
