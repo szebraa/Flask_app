@@ -23,7 +23,4 @@ jobs:
         run: |
           python3 -m pip install --upgrade --no-cache-dir pip
           python -m pip install --no-cache-dir pipenv
-          pipenv install
-      - name: Install project
-        run: |
-          pip install -e .
+          pipenv install /home/Canonical-flask-app/Pipfile
