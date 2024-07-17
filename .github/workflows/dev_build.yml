@@ -4,8 +4,8 @@
 name: DEV - Build, deploy, unit and integration test
 
 on:
-  push:
-    branches-ignore: [master]
+  push
+    #branches-ignore: [master]
 
 
 
