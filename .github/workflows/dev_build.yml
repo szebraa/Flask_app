@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the container
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose.dev.yml up -d
       - name: Docker container unit and integrations test
         run: |
           docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest

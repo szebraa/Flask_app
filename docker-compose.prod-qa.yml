@@ -1,0 +1,14 @@
+services:
+  flask_api:
+    build:
+      context: ./
+      dockerfile: ./FlaskApp.Dockerfile
+    container_name: flask_container
+    ports:
+      - '127.0.0.1:443:443'
+    volumes:
+      - ${PWD}/api:/var/www/Canonical-flask-app/api
+      - ${PWD}/tests:/var/www/Canonical-flask-app/tests
+      - ${PWD}/.flake8:/var/www/Canonical-flask-app/.flake8
+      - ${PWD}/.pylintrc:/var/www/Canonical-flask-app/.pylintrc
+    restart: always
