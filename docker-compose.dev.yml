@@ -1,4 +1,4 @@
-services: 
+services:
   flask_api:
     build:
       context: ./
