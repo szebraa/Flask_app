@@ -7,10 +7,11 @@
 disable=
     C0116, R0911, R0912, R1705, W0707
 ignore-paths=
-    apache2, .git, github, logs, __pycache__, .pytest_cache, 
+    apache2, .git, github, logs, __pycache__, .pytest_cache,
     ssl_certs, static, templates, tests, .venv, api/.pytest_cache/,
     api/__pycache__/
 ignore=
-    docker-compose.yml, FlaskApp.Dockerfile, Pipfile, Pipfile.lock, 
-    README.md, app.wsgi, .dockerignore, docker-compose.yml
-
+    docker-compose.yml, FlaskApp.Dockerfile, Pipfile, Pipfile.lock,
+    README.md, app.wsgi, .dockerignore, docker-compose.yml,
+    requirements.txt, docker-compose.prod-qa.yml,
+    docker-compose.dev.yml
