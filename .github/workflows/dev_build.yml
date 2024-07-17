@@ -48,5 +48,6 @@ jobs:
         with:
           image: throwawayrat68/canonical-flask-app-flask_api
           registry: docker.io
+          dockerfile: /home/Canonical-flask-app/FlaskApp.Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
