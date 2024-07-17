@@ -4,8 +4,8 @@
 name: DEV - Build, deploy, unit and integration test
 
 on:
-  push
-    #branches-ignore: [master]
+  push:
+    branches-ignore: [master]
 
 
 
@@ -47,6 +47,7 @@ jobs:
         name: Build & push local Docker image to docker hub
         with:
           image: throwawayrat68/canonical-flask-app-flask_api
+          tags: v1, latest
           registry: docker.io
           dockerfile: FlaskApp.Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
