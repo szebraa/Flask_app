@@ -4,8 +4,8 @@
 name: DEV - Build, deploy, unit and integration test
 
 on:
-  push:
-    branches-ignore: [master]
+  push
+    #branches-ignore: [master]
 
 
 
@@ -48,6 +48,6 @@ jobs:
         with:
           image: throwawayrat68/canonical-flask-app-flask_api
           registry: docker.io
-          dockerfile: /home/Canonical-flask-app/FlaskApp.Dockerfile
+          dockerfile: FlaskApp.Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
