@@ -21,3 +21,4 @@ exclude =
         api/.pytest_cache,
         *wsgi,
         Pipfile*
+	*.txt
