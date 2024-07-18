@@ -4,7 +4,7 @@
 name: DEV - Build, deploy, unit and integration test
 
 on:
-  pull_requests:
+  pull_request:
     branches-ignore: [master,staging]
   push:
     branches-ignore: [master,staging]
