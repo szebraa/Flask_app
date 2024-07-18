@@ -30,8 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build the container
-        run: docker-compose -f docker-compose.dev.yml up -d
+        run: docker-compose -f docker-compose.prod-qa.yml up -d
       - name: Docker container unit and integrations test
         run: |
           docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest
