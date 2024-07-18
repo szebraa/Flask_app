@@ -65,8 +65,6 @@ jobs:
         with:
           base: staging
           branch: dev
-          committer: ${{env.GIT_COMMIT_AUTHOR_NAME}}
-          author: ${{env.GIT_COMMIT_AUTHOR_NAME}}
           body:
             Auto merge from dev to staging branch
           token: ${{secrets.TOKEN}}
