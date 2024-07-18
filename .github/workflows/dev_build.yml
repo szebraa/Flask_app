@@ -63,8 +63,8 @@ jobs:
       - uses: peter-evans/create-pull-request@v6
         name: Create pull/merge request to staging
         with:
-          base: dev
-          branch: staging
+          base: staging
+          branch: dev
           body:
             Auto merge from dev to staging branch
           token: ${{secrets.TOKEN}}
