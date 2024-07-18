@@ -67,3 +67,4 @@ jobs:
           branch: dev
           body:
             Auto merge from dev to staging branch
+          token: ${{secrets.TOKEN}}

@@ -53,3 +53,4 @@ jobs:
           branch: staging
           body:
             Auto merge from staging to prod branch
+          token: ${{secrets.TOKEN}}
