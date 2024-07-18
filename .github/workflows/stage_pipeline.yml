@@ -40,3 +40,15 @@ jobs:
       - name: Docker container unit and integrations test
         run: |
           docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest
+  merge-request-to-prod:
+    needs: [build-and-local-test,deploy-docker-container-and-test]
+    steps:
+      - uses: actions/checkout@v4
+        name: Check out code
+      - uses: peter-evans/create-pull-request@v6
+        name: Create pull/merge request to prod
+        with:
+          base: master
+          branch: staging
+          body:
+            Auto merge from staging to prod branch
