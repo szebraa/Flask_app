@@ -52,5 +52,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
         run: |
-          gh pr create --title "Merge to Prod" --body "This is an automated PR to update prod"
+          gh pr create --head staging --title "Merge to Prod" --body "This is an automated PR to update prod"
           gh pr merge --auto --merge
