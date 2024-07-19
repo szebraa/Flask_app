@@ -47,7 +47,6 @@ jobs:
     needs: [build-and-local-test,deploy-docker-container-and-test]
     steps:
       - uses: actions/checkout@v4
-        name: Check out code
       - name: Create merge/pull request
         env:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
