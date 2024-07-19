@@ -66,11 +66,3 @@ jobs:
         run: |
           gh pr create --base staging --title "Merge to Staging" --body "This is an automated PR to update staging"
           gh pr merge --auto --merge
-      #- uses: peter-evans/create-pull-request@v6
-        #name: Create pull/merge request to staging
-        #with:
-          #base: staging
-          #branch: dev
-          #body:
-            #Auto merge from dev to staging branch
-          #token: ${{secrets.TOKEN}}

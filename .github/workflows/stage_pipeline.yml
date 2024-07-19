@@ -48,11 +48,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: Check out code
-      - uses: peter-evans/create-pull-request@v6
-        name: Create pull/merge request to prod
-        with:
-          base: master
-          branch: staging
-          body:
-            Auto merge from staging to prod branch
-          token: ${{secrets.TOKEN}}
+      - name: Create merge/pull request
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN}}
+        run: |
+          gh pr create --title "Merge to Prod" --body "This is an automated PR to update prod"
+          gh pr merge --auto --merge
