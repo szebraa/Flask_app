@@ -56,5 +56,5 @@ jobs:
           git remote update
           git fetch
           git checkout origin/staging
-          gh pr create --head staging --title "Merge to Prod" --body "This is an automated PR to update prod"
+          gh pr create --head origin/staging --title "Merge to Prod" --body "This is an automated PR to update prod"
           gh pr merge --auto --merge
