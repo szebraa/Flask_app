@@ -6,6 +6,8 @@ name: Prod - Build, deploy, unit and integration test
 
 on:
   pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
