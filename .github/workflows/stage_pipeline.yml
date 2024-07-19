@@ -2,8 +2,7 @@ name: Staging - Build, deploy, unit and integration test
 
 on:
   pull_request:
-    branches:
-      - [staging,master]
+    branches: [staging,master]
   #push:
     #branches:
       #- staging
