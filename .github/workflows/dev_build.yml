@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
         run: |
           gh pr create --title "Merge to Staging" --body "This is an automated PR to update staging" --base staging
-          gh pr merge --auto
+          gh pr --merge --auto
       #- uses: peter-evans/create-pull-request@v6
         #name: Create pull/merge request to staging
         #with:
