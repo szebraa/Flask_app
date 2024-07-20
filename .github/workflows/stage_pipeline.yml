@@ -2,7 +2,7 @@ name: Staging - Build, deploy, unit and integration test
 
 on:
   pull_request:
-    branches: [staging,master]
+    branches: [staging]
   #push:
     #branches:
       #- staging
@@ -52,6 +52,5 @@ jobs:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           BRANCH: staging
         run: |
-          git checkout staging
           gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
           gh pr merge --auto --merge
