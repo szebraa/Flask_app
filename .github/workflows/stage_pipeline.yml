@@ -60,7 +60,7 @@ jobs:
         run: |
           if [ ${{github.base_ref}} == 'staging' ]; then
             gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
-            gh pr merge --auto --merge
+            gh pr merge --auto --merge --admin
           else
             echo "Merge to prod completed"
           fi
