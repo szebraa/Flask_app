@@ -53,6 +53,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           BRANCH: staging
+          MERGE_METHOD: merge
+          MERGE_RETRIES: "100"
+          UPDATE_METHOD: merge
+          UPDATE_RETRIES: "100"
         run: |
           gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
           gh pr merge --auto --merge
