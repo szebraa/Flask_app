@@ -58,7 +58,7 @@ jobs:
           UPDATE_METHOD: merge
           UPDATE_RETRIES: "100"
         run: |
-          if [${{github.base_ref}} == 'staging']; then
+          if [ ${{github.base_ref}} == 'staging' ]; then
             gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
             gh pr merge --auto --merge
           else
