@@ -17,6 +17,7 @@ on:
 
 jobs:
   build-and-local-test:
+    if: ${{ (github.base_ref == 'master' && github.event_name == 'pull_request' && github.head_ref == 'staging') || (github.event_name == 'push') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +34,7 @@ jobs:
         run: |
           python3 -m pytest
   deploy-docker-container-and-test:
+    if: ${{ (github.base_ref == 'master' && github.event_name == 'pull_request' && github.head_ref == 'staging') || (github.event_name == 'push') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,25 +48,25 @@ jobs:
       - name: Docker container unit and integrations test
         run: |
           docker exec --workdir /var/www/Canonical-flask-app flask_container python3 -m pytest
-  #merge-request-to-prod:
-    #if: github.base_ref == 'staging'
-    #runs-on: ubuntu-latest
-    #needs: [build-and-local-test,deploy-docker-container-and-test]
-    #steps:
-      #- uses: actions/checkout@v4
-        #with:
-          #ref: ${{ github.event.pull_request.head.ref }}
-      #- name: Create merge/pull request
-        #env:
-          #GITHUB_TOKEN: ${{secrets.TOKEN}}
-          #BRANCH: master
-          #MERGE_METHOD: merge
-          #MERGE_RETRIES: "100"
-          #UPDATE_METHOD: merge
-          #UPDATE_RETRIES: "100"
-        #run: |
-          #if [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'staging' ]; then
-            #gh pr merge --auto --merge
-          #else
-            #echo "production push"
-          #fi
+  check-master-pull-request:
+    runs-on: ubuntu-latest
+    needs: [build-and-local-test,deploy-docker-container-and-test]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Verify merge from staging or push onto master
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN}}
+        run: |
+          if [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'staging' ]; then
+            echo "pull request from staging to prod"
+          elif [ ${{ github.event_name }} == 'push' ]; then
+            echo "prod push"
+          else
+            echo ${{github.base_ref}}
+            echo ${{github.event_name}}
+            echo ${{github.head_ref}}
+            echo "Error: Pull request to prod/master branch must come from 'staging' branch"
+            exit 1
+          fi
