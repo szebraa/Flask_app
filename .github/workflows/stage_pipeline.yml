@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-local-test:
-    if: ${{ (github.base_ref == 'staging' && github.event_name == 'pull_request' && github.head_ref == 'dev') || (github.base_ref == 'master' &&  github.event_name == 'push') || (github.event_name == 'push') }}
+    if: ${{ (github.base_ref == 'staging' && github.event_name == 'pull_request' && github.head_ref == 'dev') || (github.event_name == 'push') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
         run: |
           python3 -m pytest
   deploy-docker-container-and-test:
-    if: ${{ (github.base_ref == 'staging' && github.event_name == 'pull_request' && github.head_ref == 'dev') || (github.base_ref == 'master' &&  github.event_name == 'push') || (github.event_name == 'push') }}
+    if: ${{ (github.base_ref == 'staging' && github.event_name == 'pull_request' && github.head_ref == 'dev') || (github.event_name == 'push') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,11 +62,9 @@ jobs:
           if [ ${{github.base_ref}} == 'staging' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'dev' ]; then
             gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
             gh pr merge --auto --merge
-          elif [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'push' ]; then
+          elif [ ${{ github.event_name }} == 'push' ]; then
             echo "Merge to prod completed"
             gh pr merge --auto --merge
-          elif [ ${{ github.event_name }} == 'commit' ]; then
-            echo "performing commit into staging branch"
           else
             echo ${{github.base_ref}}
             echo ${{github.event_name}}
