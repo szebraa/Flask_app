@@ -66,8 +66,8 @@ jobs:
             echo "Merge to prod completed"
             gh pr merge --auto --merge
           else
-            echo $github.base_ref
-            echo $github.event_name
+            echo ${{github.base_ref}}
+            echo ${{github.event_name}}
             echo "Error: Pull request must come from 'dev' branch"
             exit 1
           fi
