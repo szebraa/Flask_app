@@ -63,8 +63,8 @@ jobs:
             gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
             gh pr merge --auto --merge
           elif [ ${{ github.event_name }} == 'push' ]; then
-            echo "Merge to prod completed"
             gh pr merge --auto --merge
+            echo "Merge to prod completed"
           else
             echo ${{github.base_ref}}
             echo ${{github.event_name}}
