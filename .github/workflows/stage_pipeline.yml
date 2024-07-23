@@ -69,6 +69,6 @@ jobs:
             echo ${{github.base_ref}}
             echo ${{github.event_name}}
             echo ${{github.head_ref}}
-            echo "Error: Pull request must come from 'dev' branch"
+            echo "Error: Pull request to staging branch must come from 'dev' branch"
             exit 1
           fi
