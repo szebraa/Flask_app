@@ -63,7 +63,7 @@ jobs:
           UPDATE_METHOD: merge
           UPDATE_RETRIES: "100"
         run: |
-          if [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'dev' ]; then
+          if [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'staging' ]; then
             gh pr merge --auto --merge
           else
             echo "production push"
