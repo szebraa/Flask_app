@@ -59,7 +59,7 @@ jobs:
           UPDATE_METHOD: merge
           UPDATE_RETRIES: "100"
         run: |
-          if [ ${{github.base_ref}} == 'staging' ] && [ ${{ github.event_name }} == 'pull_request' && ${{github.head_ref}} == 'dev']; then
+          if [ ${{github.base_ref}} == 'staging' ] && [ ${{ github.event_name }} == 'pull_request' ] && [ ${{github.head_ref}} == 'dev' ]; then
             gh pr create --head staging --base master --title "Merge to Prod" --body "This is an automated PR to update prod"
             gh pr merge --auto --merge
           elif [ ${{github.base_ref}} == 'master' ] && [ ${{ github.event_name }} == 'push' ]; then
@@ -71,6 +71,6 @@ jobs:
             echo ${{github.base_ref}}
             echo ${{github.event_name}}
             echo ${{github.head_ref}}
-            echo "Error: Pull request must come from 'dev' brancha"
+            echo "Error: Pull request must come from 'dev' branch"
             exit 1
           fi
