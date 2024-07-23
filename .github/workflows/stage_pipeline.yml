@@ -71,6 +71,6 @@ jobs:
             echo ${{github.base_ref}}
             echo ${{github.event_name}}
             echo ${{github.head_ref}}
-            echo "Error: Pull request must come from 'dev' branch"
+            echo "Error: Pull request must come from 'dev' brancha"
             exit 1
           fi
